@@ -8,19 +8,17 @@ class Artist(models.Model):
         primary_key=True, default=uuid.uuid4, editable=False, max_length=100
     )
     name = models.CharField(max_length=255)
-    description = models.TextField(null=True, blank=True)
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        null=True,
-        related_name="artists",
-    )
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
     
     
+class Record_Label(models.Model):
+    id = models.UUIDField(
+        primary_key=True, default=uuid.uuid4, editable=False, max_length=100
+    )
+    name = models.CharField(max_length=255)
 
 class Media(models.Model):
     class Type(models.IntegerChoices):
@@ -34,14 +32,11 @@ class Media(models.Model):
     id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False, max_length=100
     )
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        null=True,
-        related_name="medias",
-    )
+
     title = models.CharField(max_length=255)
     type  = models.IntegerField(choices=Type.choices, default=1)
+    catalog_number = models.CharField(max_length=20, null=True, blank=True)
+    record_label = models.ForeignKey(Record_Label, on_delete=models.SET_NULL, null=True, related_name="record_labels")
     release_year = models.IntegerField(null=True, blank=True)
     artist = models.ForeignKey(Artist, on_delete=models.SET_NULL, null=True, related_name="artists")
 
