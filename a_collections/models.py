@@ -20,6 +20,10 @@ class Record_Label(models.Model):
     )
     name = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.name
+    
+
 class Media(models.Model):
     class Type(models.IntegerChoices):
         CD = 1  
