@@ -10,4 +10,4 @@ RUN pip install gunicorn
 
 COPY . /app/
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "collector.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "a_config.wsgi:application"]
