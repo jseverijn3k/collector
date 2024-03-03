@@ -40,7 +40,7 @@ class Media(models.Model):
     title = models.CharField(max_length=255)
     type  = models.IntegerField(choices=Type.choices, default=1)
     catalog_number = models.CharField(max_length=20, null=True, blank=True)
-    record_label = models.ForeignKey(Record_Label, on_delete=models.SET_NULL, null=True, related_name="record_labels")
+    record_label = models.ForeignKey(Record_Label, on_delete=models.SET_NULL, null=True, blank=True, related_name="record_labels")
     release_year = models.IntegerField(null=True, blank=True)
     artist = models.ForeignKey(Artist, on_delete=models.SET_NULL, null=True, related_name="artists")
 
