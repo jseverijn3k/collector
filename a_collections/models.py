@@ -43,7 +43,7 @@ class Media(models.Model):
     record_label = models.ForeignKey(Record_Label, on_delete=models.SET_NULL, null=True, blank=True, related_name="record_labels")
     release_year = models.IntegerField(null=True, blank=True)
     artist = models.ForeignKey(Artist, on_delete=models.SET_NULL, null=True, related_name="artists")
-
+    
     def __str__(self):
         return f"{self.title} | {self.artist.name}"
 
