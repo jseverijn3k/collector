@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   nginx:
-    build: ./nginx
+    build: ./compose/production/nginx
     volumes:
       - static_volume:/home/app/web/staticfiles
       - media_volume:/home/app/web/mediafiles
@@ -15,7 +15,7 @@ services:
   web:
     build: 
       context: ./
-      dockerfile: Dockerfile.prod
+      dockerfile: ./compose/production/django/Dockerfile.prod
     command: gunicorn a_config.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - static_volume:/home/app/web/staticfiles
