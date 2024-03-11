@@ -162,7 +162,8 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / 'mediafiles'
+# MEDIA_ROOT = BASE_DIR / 'mediafiles'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost:1337"]
 
@@ -174,7 +175,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
-AUTH_USER_MODEL = "a_users.User"
+# AUTH_USER_MODEL = "a_users.User"
 
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of allauth
