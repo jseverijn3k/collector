@@ -71,3 +71,16 @@ class Collection(models.Model):
 
     def __str__(self):
         return f"{self.user.realname} | {self.type} | {self.media.title} | {self.media.artist.name}"
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=20)
+    image = models.FileField(upload_to='icons/', null=True, blank=True) # filefield instead of imagefield since we have to deal with svg files
+    slug = models.SlugField(max_length=20, unique=True)
+    order = models.IntegerField(null=True)
+
+    def __str__(self):
+        return str(self.name)
+    
+    class Meta:
+        ordering = ['order']
