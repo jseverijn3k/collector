@@ -1,5 +1,7 @@
 from django.shortcuts import render
 
+from a_collections.models import Artist, Media
+
 # Create your views here.
 def home_view(request, tag=None):
     # if tag:
@@ -18,12 +20,15 @@ def home_view(request, tag=None):
     # except:
     #     return HttpResponse('')
 
+
     quote = 'Record collecting is the hobby of collecting sound recordings, usually of music, but sometimes poetry, reading, historical speeches, and ambient noises. Although the typical focus is on vinyl records, all formats of recorded music can be collected.'
     context = {
         # 'posts' : posts,
         # 'tag' : tag,
         # 'page' : page,
-        'quote' :  quote
+        'artists' : Artist.objects.all(),
+        'albums' : Media.objects.all(),
+        'quote' :  quote,
     }
     print (f"The quote is: {quote}")
     print (f"The context is: {context}")    

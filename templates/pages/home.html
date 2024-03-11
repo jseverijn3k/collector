@@ -2,6 +2,18 @@
 
 {% block content %}
 
-TESTTEST
-<h1>{{quote}}</h1>
+<h2>This Week’s Most Popular Artists</h2>
+<ul>
+    {% for artist in artists %}
+        <li>* {{artist}}</li>
+    {% endfor %}
+</ul>
+<br>
+
+<h2>This Week’s Most Collected</h2>
+<ul>
+    {% for album in albums %}
+        <li> * {{album}}</li>
+    {% endfor %}
+</ul>
 {% endblock %}

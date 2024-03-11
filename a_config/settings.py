@@ -43,6 +43,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # 3rd party apps
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'django_htmx',
+
+    # ... include the providers you want to enable:
+    # 'allauth.socialaccount.providers.google',
+
+    'django_cleanup.apps.CleanupConfig',
+
     # my apps
     'a_collections',
     'a_users',
@@ -57,6 +68,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # django_htmx middleware
+    'django_htmx.middleware.HtmxMiddleware',
+
+    # django-allauth account middleware:
+    "allauth.account.middleware.AccountMiddleware",
+
 ]
 
 ROOT_URLCONF = 'a_config.urls'
@@ -158,6 +176,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
 AUTH_USER_MODEL = "a_users.User"
 
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of allauth
+    'django.contrib.auth.backends.ModelBackend',
+
+    # allauth specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+LOGIN_REDIRECT_URL = '/'
+
+# TEMPORARY EMAIL BACKEND -> for testing allauth locally
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Choose to have users verify their email addresses or not
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
