@@ -21,14 +21,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 SECRET_KEY = os.environ.get("SECRET_KEY", default="not_so_secret_key")
+print(f"SCRET KEY:: {SECRET_KEY}")
 
 django_debug_var = os.environ.get("DJANGO_DEBUG")
 DEBUG = django_debug_var
+if DEBUG == None:
+    DEBUG = True
 
+print(f"DEBUG:: {DEBUG}")
 # 'DJANGO_ALLOWED_HOSTS' should be a single string of hosts with a space between each.
 # For example: 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default="localhost 127.0.0.1").split(" ")
-
+print(f"ALOWED HOSTS:: {ALLOWED_HOSTS}")
 # Application definition
 
 INSTALLED_APPS = [
@@ -60,7 +64,7 @@ ROOT_URLCONF = 'a_config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [ BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
