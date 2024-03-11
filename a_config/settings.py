@@ -23,12 +23,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("SECRET_KEY", default="not_so_secret_key")
 print(f"VALUE of SECRET_KEY variable: {SECRET_KEY}")
 
-DEBUG = bool(os.environ.get("DEBUG", default=False))
+DEBUG = bool(os.environ.get("DJANGO_DEBUG", default=False))
+django_debug_var = os.environ.get("DJANGO_DEBUG")
+DEBUG = django_debug_var
+print(f"VALUE of django debug variable: {django_debug_var}")
+print(f"VALUE of DEBUG variable: {DEBUG}")
 
 # 'DJANGO_ALLOWED_HOSTS' should be a single string of hosts with a space between each.
 # For example: 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default="localhost 127.0.0.1").split(" ")
-
+print(f"VALUE of ALLOWED HOSTS variable: {ALLOWED_HOSTS}")
 
 # Application definition
 
@@ -134,7 +138,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "static/"
-STATICFILES_DIRS = [BASE_DIR / "static"]
+# STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # STATIC_ROOT = BASE_DIR.parent / "local-cdn" / "static"
