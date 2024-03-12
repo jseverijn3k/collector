@@ -22,8 +22,9 @@
         <ul class="flex items-center navitems flex-col md:flex-row gap-8 md:gap-0 justify-center h-full -translate-y-10 md:translate-y-0">
             {% if user.is_authenticated %}
                 <li><a href="/">Home</a></li>
-                {% comment %} <li><a href="{% url '' %}">Create Post</a></li>
-                <li><a href="{% url 'inbox' %}">Inbox</a></li> {% endcomment %}
+                <li><a href="{% url 'artist-create' %}">Create Artist</a></li>
+                <li><a href="{% url 'media-create' %}">Create Media</a></li>
+                {% comment %} <li><a href="{% url 'inbox' %}">Inbox</a></li>  {% endcomment %}
                 <li x-data="{ dropdownOpen: false }" class="relative">
                     <a @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false" class="cursor-pointer select-none">
                         <img class="h-8 w-8 rounded-full object-cover" src="{{ user.profile.avatar }}"/>

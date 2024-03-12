@@ -24,11 +24,24 @@ from django.urls import path, include
 from a_collections.views import *
 from a_users.views import *
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
 
     path('', home_view, name='home'),
+
+    # a_collections urls
+    path('', home_view, name='home'),
+    path('media/<pk>', media_page_view, name='media-page'),
+    path('media/create/', media_create_view, name='media-create'),
+    path('media/delete/<pk>', media_delete_view, name='media-delete'),
+    path('media/edit/<pk>', media_edit_view, name='media-edit'),
+
+    path('artist/create/', artist_create_view, name='artist-create'),
+
+
+    path('category/<tag>', home_view, name='category'),
 
     # a_users urls
     path('profile', profile_view, name='profile'),

@@ -7,7 +7,7 @@ class Artist(models.Model):
     id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False, max_length=100
     )
-    name = models.CharField(max_length=255)
+    name = models.CharField(unique=True, max_length=255)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
