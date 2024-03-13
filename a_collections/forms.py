@@ -1,12 +1,27 @@
 from django.forms import ModelForm
 from django import forms 
 
+
 from .models import Media, Artist
 
+from dal import autocomplete
+
+class ArtistAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = Artist.objects.all()
+        if self.q:
+            qs = qs.filter(name__istartswith=self.q)
+        return qs
+    
+
 class MediaCreateForm(ModelForm):
+    
     class Meta:
         model = Media
-        fields = "__all__"
+        fields = ('__all__')
+        widgets = {
+            'artist': autocomplete.ModelSelect2(url='artist-autocomplete')
+        }
         # fields = ['url', 'body', 'tags']
         # labels = {
         #     'body' : 'Caption',

@@ -36,6 +36,12 @@ print(f"ALOWED HOSTS:: {ALLOWED_HOSTS}")
 # Application definition
 
 INSTALLED_APPS = [
+
+    # django auto complete
+    'dal',
+    'dal_select2',
+    
+    # standard apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

@@ -22,7 +22,10 @@ from django.contrib import admin
 from django.urls import path, include
 
 from a_collections.views import *
+from a_collections.forms import ArtistAutocomplete
 from a_users.views import *
+
+from dal import autocomplete
 
 
 urlpatterns = [
@@ -40,7 +43,19 @@ urlpatterns = [
 
     path('artist/create/', artist_create_view, name='artist-create'),
 
-
+    # autocomplete view TODO: Move to views
+    # path('artist-autocomplete/', ArtistAutocomplete.as_view(), name='artist-autocomplete'),
+    path(
+        'artist-autocomplete/$',
+        autocomplete.Select2QuerySetView.as_view(
+            model=Artist,
+            create_field='name',
+            validate_create=True,
+        ),
+        name='artist-autocomplete',
+    ),
+    
+    path('media/download_csv/', download_csv, name='download-csv'),
     path('category/<tag>', home_view, name='category'),
 
     # a_users urls

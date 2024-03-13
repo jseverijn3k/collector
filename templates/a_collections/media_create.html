@@ -1,4 +1,5 @@
 {% extends 'layouts/b.html' %}
+{% load static %}
 
 {% block content %}
 
@@ -17,5 +18,9 @@
         <a class="button secondaryAction ml-1" href="{{ request.META.HTTP_REFERER }}">Cancel</a>
     </form>
 </div>
+
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+
+{{ form.media }}
 
 {% endblock %}
