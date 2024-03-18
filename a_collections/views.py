@@ -38,7 +38,7 @@ def home_view(request, tag=None):
         'tag' : tag,
         # 'page' : page,
         'artists' : Artist.objects.all(),
-        'albums' : release.objects.all(),
+        'albums' : Release.objects.all(),
         'quote' :  quote,
     }
     
@@ -286,7 +286,8 @@ def add_artist_view(request):
 
         # Check if the artist_id already exists in the database
         artist = Artist.objects.filter(musicbrainz_id=artist_id).first()
-        existing_album = release.objects.filter(musicbrainz_id=release_id).first()
+        print(f"Artist: {artist}")
+        existing_album = Release.objects.filter(musicbrainz_id=release_id).first()
 
         # If the artist does not exist, create a new record
         if not artist:
@@ -304,8 +305,8 @@ def add_artist_view(request):
             # You can choose to perform any other action here, if needed
             messages.success(request, f'Artist {artist_name} already in the database')  
 
-        if not existing_album:
-            release = release.objects.create(
+        if not existing_album and release_id is not None:
+            release = Release.objects.create(
                 musicbrainz_id=release_id,
                 name=release_name,
                 artist=artist,
@@ -314,10 +315,11 @@ def add_artist_view(request):
             # Now the artist record is added to the database
             messages.success(request, f'release {release} added successfully')  
 
-        else:
+        else: 
             # The artist already exists in the database
             # You can choose to perform any other action here, if needed
-            messages.success(request, f'release {existing_album} already in the database')  
+            if existing_album:
+                messages.success(request, f'release {existing_album} already in the database')  
 
 
         return redirect('home')  # Redirect to home page or any other page after adding artist
@@ -336,7 +338,7 @@ def download_csv(request):
     # Write headers
     writer.writerow(['Artist name', 'release title', 'release type', 'release release year', 'release catalog nr', 'Record label'])
 
-    release_data = release.objects.all()
+    release_data = Release.objects.all()
     print(release_data)
     artist_data = Artist.objects.all()
     print(artist_data)

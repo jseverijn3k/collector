@@ -35,8 +35,8 @@
         <li>{{result.ext_score}} | {{ result.name }} - {{result.type}} - {{result.country}} - {{result.gender}}
             <form method="post" action="{% url 'add_artist' %}">
                 {% csrf_token %}
-                <input type="hidden" name="id" value="{{ result.id }}">
-                <input type="hidden" name="name" value="{{ result.name }}">
+                <input type="hidden" name="artist_id" value="{{ result.id }}">
+                <input type="hidden" name="artist_name" value="{{ result.name }}">
                 <input type="hidden" name="type" value="{{ result.type }}">
                 <input type="hidden" name="ext_score" value="{{ result.ext_score }}">
                 <button type="submit">Add</button>
