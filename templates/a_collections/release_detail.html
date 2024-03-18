@@ -1,0 +1,18 @@
+{% extends 'layouts/b.html' %}
+
+{% block content %}
+
+<h1>{{ release.name }}</h1>
+<p>Release Year: {{ release.release_year }}</p>
+<p>Artist: {{ release.artist.name }}</p>
+<p>Label: {{ release.record_label.name }}</p>
+
+<!-- Display cover art images -->
+<h2>Cover Art</h2>
+<div>
+    {% for art in cover_art %}
+        <img src="{{ art.image_url }}" alt="Cover Art">
+    {% endfor %}
+</div>
+
+{% endblock %}

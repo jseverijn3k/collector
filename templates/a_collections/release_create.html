@@ -20,6 +20,7 @@
     <table>
         <thead>
           <tr>
+            <th>Cover Art</th>
             <th>Match</th>
             <th>Name</th>
             <th>Artist</th>
@@ -38,6 +39,12 @@
 
           {% for result in results %}
           <tr>
+            <td>
+              {% comment %} {{result.cover_art_images}} {% endcomment %}
+              {% for image_info in result.cover_art_images %}
+                <img src="{{ image_info.image_small }}" alt="Cover Art" width="50" height="50">
+              {% endfor %}          
+            </td>
             <td>{{ result.ext_score }}</td>
             <td>{{ result.name }}</td>
             <td>{{ result.artist }}</td>

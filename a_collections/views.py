@@ -10,7 +10,7 @@ import csv
 from django.http import HttpResponse
 
 from a_collections.utils import artist_search, release_search
-from a_collections.models import Artist, Release
+from a_collections.models import Artist, Release, Cover_Art
 from a_collections.forms import ReleaseCreateForm, ReleaseEditForm, ArtistCreateForm, ArtistEditForm
 
 # Create your views here.
@@ -99,6 +99,21 @@ def release_edit_view(request, pk):
     return render(request, "a_collections/release_edit.html", context)
 
 
+def get_cover_art_urls(release_id):
+    # Construct the URL for the cover art images using the release ID
+    cover_art_url = f"https://coverartarchive.org/release/{release_id}"
+    print(f"cover art url: {cover_art_url}")
+    # Send GET request to the cover art archive
+    response = requests.get(cover_art_url)
+
+    # Check if request was successful and cover art exists
+    if response.status_code == 200:
+        return response.json()  # Return the JSON data
+    else:
+        return None
+
+
+    
 def release_page_view(request, pk):
     release = get_object_or_404(release, id=pk)
 
@@ -183,6 +198,24 @@ def search_release(request):
             # Initialize variables to accumulate CD and DVD track counts
             cd_tracks = 0
             dvd_tracks = 0
+            
+            
+            # Get cover art URLs for the release
+            cover_art_data = get_cover_art_urls(release_id)
+            cover_art_images = []
+            if cover_art_data is not None:
+                for image_data in cover_art_data['images']:
+                    image_id = image_data.get('id', None)
+                    image_url = image_data.get('image', None)
+                    thumbnails_small = image_data.get('thumbnails', {}).get('small', None)
+
+                    image_type = image_data.get('types', [])
+                    if image_type and image_type[0] == "Front":
+                        print(f"id: {image_id} | image: {image_url} | type: {image_type} | thumbnails_small: {thumbnails_small}")
+                        cover_art_images.append({'id': image_id, 'image': image_url, 'image_small': thumbnails_small, 'type': image_type})
+                        print(cover_art_images)
+            else:
+                cover_art_images = []
 
             # Iterate over each medium in the medium list
             if 'medium-list' in release:
@@ -247,7 +280,11 @@ def search_release(request):
                 'barcode': barcode,
                 'language': language,
                 'type': type,
-                'status': status
+                'status': status,
+
+                # cover art
+                'cover_art_images': cover_art_images
+
             }
             result_list.append(result_info)
 
@@ -270,6 +307,19 @@ def scan_barcode(request):
         print(f"data:: {data    }")
         return JsonResponse(data)
     return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+
+def release_detail(request, release_id):
+    release = Release.objects.get(id=release_id)
+    artist = Artist.objects.get(id = artist.id)
+    cover_art = Cover_Art.objects.filter(release=release)
+    context = {
+        'release': release,
+        'artist' : artist,
+        'cover_art': cover_art,
+    }
+    return render(request, 'a_collections/release_detail.html', context)
 
 
 @login_required
