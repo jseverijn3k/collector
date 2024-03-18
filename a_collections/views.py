@@ -48,6 +48,12 @@ def home_view(request, tag=None):
     return render(request, "pages/home.html", context)
  
 
+def release_list_view(request, tag=None):
+    context = {
+        'results' : Release.objects.all(),
+    }
+    return render(request, "a_collections/release_list.html", context)
+
 
 @login_required
 def release_create_view(request, *args, **kwargs):
@@ -111,7 +117,6 @@ def get_cover_art_urls(release_id):
         return response.json()  # Return the JSON data
     else:
         return None
-
 
     
 def release_page_view(request, pk):
@@ -189,6 +194,7 @@ def search_release(request):
             country_date = release.get('country', '') + ' ' + release.get('date', '') if any(key in release for key in ['country', 'date']) else ''
             label_info = release.get('label-info-list', [])
             label = label_info[0].get('label', {}).get('name', '') if label_info else ''
+            label_id = label_info[0].get('label', {}).get('id', '') if label_info else ''
             catalog_number = label_info[0].get('catalog-number', '') if label_info else ''
             barcode = release.get('barcode', '')
             language = release.get('text-representation', {}).get('language', '')
@@ -208,8 +214,8 @@ def search_release(request):
                     image_id = image_data.get('id', None)
                     image_url = image_data.get('image', None)
                     thumbnails_small = image_data.get('thumbnails', {}).get('small', None)
-
                     image_type = image_data.get('types', [])
+
                     if image_type and image_type[0] == "Front":
                         print(f"id: {image_id} | image: {image_url} | type: {image_type} | thumbnails_small: {thumbnails_small}")
                         cover_art_images.append({'id': image_id, 'image': image_url, 'image_small': thumbnails_small, 'type': image_type})
@@ -253,6 +259,7 @@ def search_release(request):
 
             print("Country/Date:", country_date)
             print("Label:", label)
+            print("Label_id:", label_id)
             print("Catalog#:", catalog_number)
             print("Barcode:", barcode)
             print("Language:", language)
@@ -276,7 +283,8 @@ def search_release(request):
                 'dvd_tracks': dvd_tracks,
                 'date': country_date,
                 'label': label,
-                'Catalog_number': catalog_number,
+                'label_id': label_id,
+                'catalog_number': catalog_number,
                 'barcode': barcode,
                 'language': language,
                 'type': type,
@@ -330,7 +338,16 @@ def add_artist_view(request):
         artist_id = request.POST.get('artist_id')
         artist_name = request.POST.get('artist_name')
         type = request.POST.get('type')
+        format = request.POST.get('format')
         ext_score = request.POST.get('ext_score')
+        barcode = request.POST.get('barcode')
+        date = request.POST.get('date')
+        language = request.POST.get('language')
+        status = request.POST.get('status')
+        catalog_number = request.POST.get('catalog_number')
+        cd_tracks = request.POST.get('cd_tracks')
+        dvd_tracks = request.POST.get('dvd_tracks')
+        cover_art_images = request.POST.get('cover_art_images')
 
         print(f"id: {artist_id} | name: {artist_name} | type: {type} ext_score: {ext_score}")
 
@@ -360,10 +377,22 @@ def add_artist_view(request):
                 musicbrainz_id=release_id,
                 name=release_name,
                 artist=artist,
-                
+                barcode = barcode,
+                catalog_number = catalog_number,
+                status = status,
+                language = language,
+                cd_tracks = cd_tracks,
+                dvd_tracks = dvd_tracks,
+                format = format,
+                date = date,
             )
             # Now the artist record is added to the database
             messages.success(request, f'release {release} added successfully')  
+
+        if cover_art_images:
+            cover_art = Cover_Art.objects.create(
+                musicbrainz_id = 1
+            )
 
         else: 
             # The artist already exists in the database

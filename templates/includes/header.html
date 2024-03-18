@@ -23,6 +23,7 @@
             {% if user.is_authenticated %}
                 <li><a href="/">Home</a></li>
                 <li><a href="{% url 'download-csv' %}">CSV</a></li>
+                <li><a href="{% url 'release-list' %}">Release List</a></li>
                 <li><a href="{% url 'artist-create' %}">Create Artist</a></li>
                 <li><a href="{% url 'release-create' %}">Create Releae</a></li>
                 <li><a href="{% url 'barcode_scanner' %}">Barcode Scanner</a></li>

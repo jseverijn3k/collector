@@ -36,6 +36,7 @@ urlpatterns = [
 
     # a_collections urls
     path('', home_view, name='home'),
+    path('release/list', release_list_view, name='release-list'),
     path('release/<pk>', release_page_view, name='release-page'),
     path('release/create/', release_create_view, name='release-create'),
     path('release/delete/<pk>', release_delete_view, name='release-delete'),

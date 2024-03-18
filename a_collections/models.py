@@ -44,6 +44,14 @@ class Release(models.Model):
     name = models.CharField(max_length=255)
     type  = models.IntegerField(choices=Type.choices, default=1)
     catalog_number = models.CharField(max_length=20, null=True, blank=True)
+    
+    barcode = models.CharField(max_length=20, null=True, blank=True)
+    language = models.CharField(max_length=20, null=True, blank=True)
+    status = models.CharField(max_length=20, null=True, blank=True)
+    date = models.CharField(max_length=20, null=True, blank=True)
+    format = models.CharField(max_length=20, null=True, blank=True)
+    cd_tracks = models.IntegerField()
+    dvd_tracks = models.IntegerField() 
     record_label = models.ForeignKey(Record_Label, on_delete=models.SET_NULL, null=True, blank=True, related_name="record_labels")
     release_year = models.IntegerField(null=True, blank=True)
     artist = models.ForeignKey(Artist, on_delete=models.SET_NULL, null=True, related_name="artists")
@@ -54,8 +62,11 @@ class Release(models.Model):
 
 class Cover_Art(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    musicbrainz_id = models.CharField(unique=True, blank=True, null=True, max_length=255)
     release = models.ForeignKey(Release, on_delete=models.CASCADE, related_name="cover_art")
-    image_url = models.URLField()  # Assuming you store the URL of the image
+    image_url = models.URLField()  # url to the coverartarchive website
+    cover_art_size = models.CharField(blank=True, null=True, max_length=255, default="full") # full, Small, etc...    
+    cover_art_type = models.CharField(blank=True, null=True, max_length=255) # Front, Back, etc...
 
     def __str__(self):
         return f"Cover Art for {self.release.name}"
