@@ -1,0 +1,89 @@
+{% extends 'layouts/b.html' %}
+{% load static %}
+
+{% block content %}
+
+<div id="interactive" class="viewport">
+    <video autoplay="true" id="video-preview" style="display: none;"></video>
+    <button id="start-camera-button">Start Camera</button>
+    <button id="capture-button" style="display: none;">Capture Image</button>
+</div>
+<canvas id="canvas" style="display: none;"></canvas>
+<script>
+    const videoPreview = document.getElementById('video-preview');
+    const startCameraButton = document.getElementById('start-camera-button');
+    const captureButton = document.getElementById('capture-button');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Function to start the camera
+    function startCamera() {
+        navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'environment' }
+        }).then(stream => {
+            videoPreview.srcObject = stream;
+            videoPreview.play();
+            console.log('Camera started');
+            startCameraButton.style.display = 'none';
+            captureButton.style.display = 'inline-block';
+        }).catch(error => {
+            console.error('Error accessing webcam:', error);
+        });
+    }
+
+    // Function to stop the camera
+    function stopCamera() {
+        const stream = videoPreview.srcObject;
+        if (stream) {
+            const tracks = stream.getTracks();
+            tracks.forEach(track => track.stop());
+            videoPreview.srcObject = null;
+        }
+    }
+
+    // Function to capture image from camera
+    function captureImage() {
+        ctx.drawImage(videoPreview, 0, 0, canvas.width, canvas.height);
+        const imageData = canvas.toDataURL('image/jpeg');
+        stopCamera();
+        processImage(imageData);
+    }
+
+    // Function to send image data to Django view
+    function processImage(imageData) {
+        // Get CSRF token from cookie
+        const csrftoken = getCookie('csrftoken');
+
+        // Send image data along with CSRF token in request headers
+        fetch('/scan_barcode/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken  // Include CSRF token in headers
+            },
+            body: JSON.stringify({ image_data: imageData })
+        }).then(response => {
+            if (response.ok) {
+                console.log('Image data sent successfully');
+            } else {
+                console.error('Failed to send image data:', response.statusText);
+            }
+        }).catch(error => {
+            console.error('Error sending image data:', error);
+        });
+    }
+
+    // Event listener for start camera button
+    startCameraButton.addEventListener('click', startCamera);
+
+    // Event listener for capture button
+    captureButton.addEventListener('click', captureImage);
+
+    // Function to get CSRF token from cookie
+    function getCookie(name) {
+        const cookieValue = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+        return cookieValue ? cookieValue.pop() : '';
+    }
+</script>
+
+{% endblock %}

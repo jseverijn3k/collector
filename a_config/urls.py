@@ -36,12 +36,19 @@ urlpatterns = [
 
     # a_collections urls
     path('', home_view, name='home'),
-    path('media/<pk>', media_page_view, name='media-page'),
-    path('media/create/', media_create_view, name='media-create'),
-    path('media/delete/<pk>', media_delete_view, name='media-delete'),
-    path('media/edit/<pk>', media_edit_view, name='media-edit'),
+    path('release/<pk>', release_page_view, name='release-page'),
+    path('release/create/', release_create_view, name='release-create'),
+    path('release/delete/<pk>', release_delete_view, name='release-delete'),
+    path('release/edit/<pk>', release_edit_view, name='release-edit'),
 
     path('artist/create/', artist_create_view, name='artist-create'),
+    path('create_artist/', artist_create_view, name='create_artist'),
+    path('search_artist/', search_artist, name='search_artist'),
+    path('add_artist/', add_artist_view, name='add_artist'),
+    path('search_release/', search_release, name='search_release'),
+
+    path('barcode_scanner/', barcode_scanner, name='barcode_scanner'),
+    path('scan_barcode/', scan_barcode, name='scan_barcode'),
 
     # autocomplete view TODO: Move to views
     # path('artist-autocomplete/', ArtistAutocomplete.as_view(), name='artist-autocomplete'),

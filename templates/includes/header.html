@@ -24,7 +24,9 @@
                 <li><a href="/">Home</a></li>
                 <li><a href="{% url 'download-csv' %}">CSV</a></li>
                 <li><a href="{% url 'artist-create' %}">Create Artist</a></li>
-                <li><a href="{% url 'media-create' %}">Create Media</a></li>
+                <li><a href="{% url 'release-create' %}">Create Releae</a></li>
+                <li><a href="{% url 'barcode_scanner' %}">Barcode Scanner</a></li>
+                
                 {% comment %} <li><a href="{% url 'inbox' %}">Inbox</a></li>  {% endcomment %}
                 <li x-data="{ dropdownOpen: false }" class="relative">
                     <a @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false" class="cursor-pointer select-none">

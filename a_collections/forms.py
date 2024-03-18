@@ -2,7 +2,7 @@ from django.forms import ModelForm
 from django import forms 
 
 
-from .models import Media, Artist
+from .models import Release, Artist
 
 from dal import autocomplete
 
@@ -14,10 +14,10 @@ class ArtistAutocomplete(autocomplete.Select2QuerySetView):
         return qs
     
 
-class MediaCreateForm(ModelForm):
+class ReleaseCreateForm(ModelForm):
     
     class Meta:
-        model = Media
+        model = Release
         fields = ('__all__')
         widgets = {
             'artist': autocomplete.ModelSelect2(url='artist-autocomplete')
@@ -33,9 +33,9 @@ class MediaCreateForm(ModelForm):
         #     'tags' : forms.CheckboxSelectMultiple(),
         # }
        
-class MediaEditForm(ModelForm):
+class ReleaseEditForm(ModelForm):
     class Meta:
-        model = Media
+        model = Release
         fields = "__all__"
         # fields = ['body', 'tags']
         # labels = {
