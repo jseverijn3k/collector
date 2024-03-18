@@ -389,10 +389,17 @@ def add_artist_view(request):
             # Now the artist record is added to the database
             messages.success(request, f'release {release} added successfully')  
 
-        if cover_art_images:
-            cover_art = Cover_Art.objects.create(
-                musicbrainz_id = 1
-            )
+        if release is not None and cover_art_images:
+            for image in cover_art_images:
+                print(f"image: {image}")
+                cover_art = Cover_Art.objects.create(
+                    musicbrainz_id = image.id,
+                    release = release,
+                    image_url = image.image, 
+                    image_small_url = image.image_small, 
+                    cover_art_type = image.type,
+                )
+            messages.success(request, f'cover art for {release} added successfully')
 
         else: 
             # The artist already exists in the database

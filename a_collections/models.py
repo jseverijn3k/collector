@@ -65,7 +65,7 @@ class Cover_Art(models.Model):
     musicbrainz_id = models.CharField(unique=True, blank=True, null=True, max_length=255)
     release = models.ForeignKey(Release, on_delete=models.CASCADE, related_name="cover_art")
     image_url = models.URLField()  # url to the coverartarchive website
-    cover_art_size = models.CharField(blank=True, null=True, max_length=255, default="full") # full, Small, etc...    
+    image_small_url = models.URLField()  # url to the coverartarchive website
     cover_art_type = models.CharField(blank=True, null=True, max_length=255) # Front, Back, etc...
 
     def __str__(self):
