@@ -2,17 +2,48 @@
 
 {% block content %}
 
+<div class="cover-art-container">
+    {% if cover_art_images %}
+        {% with first_cover_art=cover_art_images.first %}
+            <img src="{{ first_cover_art.image_url }}" alt="Cover Art" width="200">
+        {% endwith %}
+    {% else %}
+        <p>No cover art available</p>
+    {% endif %}
+</div>
 <h1>{{ release.name }}</h1>
-<p>Release Year: {{ release.release_year }}</p>
 <p>Artist: {{ release.artist.name }}</p>
 <p>Label: {{ release.record_label.name }}</p>
+<p>Release date: {{ release.date }}</p>
+<br>
+<p>Catalog Number: {{ release.catalog_number }}</p>
+<p>Barcode: {{ release.barcode }}</p>
+<br>
+<p>Format: {{ release.format }}</p>
+<p>Status: {{ release.status }}</p>
+{% comment %} <p>Tracks: {{ release.cd_tracks }} + {% if release.dvd_tracks > 0 %}{{ release.dvd_tracks }}{% endif %}</p> {% endcomment %}
+<p>Tracks: {{ release.cd_tracks }} {% if release.dvd_tracks > 0 %} CD + {{ release.dvd_tracks }} DVD{% endif %}</p>
 
+{% comment %} <br> {% endcomment %}
 <!-- Display cover art images -->
-<h2>Cover Art</h2>
-<div>
-    {% for art in cover_art %}
-        <img src="{{ art.image_url }}" alt="Cover Art">
-    {% endfor %}
-</div>
+{% comment %} <h2>Cover Art</h2>
+    <div class="cover-art-container">
+        {% for cover_art in cover_art_images %}
+            <img src="{{ cover_art.image_url }}" alt="Cover Art" width="200">
+            [{{cover_art.cover_art_type}}]
+        {% empty %}
+            <p>No cover art available</p>
+        {% endfor %}
+    </div> {% endcomment %}
 
+
+<!-- Back button -->
+<button onclick="goBack()">Back</button>
+
+<!-- JavaScript function to go back to the previous page -->
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
 {% endblock %}

@@ -10,7 +10,7 @@ import csv
 from django.http import HttpResponse
 
 from a_collections.utils import artist_search, release_search
-from a_collections.models import Artist, Release, Cover_Art
+from a_collections.models import Artist, Release, Cover_Art, Record_Label
 from a_collections.forms import ReleaseCreateForm, ReleaseEditForm, ArtistCreateForm, ArtistEditForm
 
 # Create your views here.
@@ -49,8 +49,10 @@ def home_view(request, tag=None):
  
 
 def release_list_view(request, tag=None):
+    
     context = {
-        'results' : Release.objects.all(),
+        'results' : Release.objects.prefetch_related('cover_art'),
+
     }
     return render(request, "a_collections/release_list.html", context)
 
@@ -74,7 +76,7 @@ def release_create_view(request, *args, **kwargs):
 
 @login_required
 def release_delete_view(request, pk):
-    release = get_object_or_404(release, id=pk, user=request.user)
+    release = get_object_or_404(Release, id=pk)
 
     if request.method == 'POST':
         release.delete()
@@ -120,28 +122,16 @@ def get_cover_art_urls(release_id):
 
     
 def release_page_view(request, pk):
-    release = get_object_or_404(release, id=pk)
-
-    # if request.htmx:
-    #     # check if top is part of the url
-    #     if 'top' in request.GET:
-    #         # comments = post.comments.filter(likes__isnull=False).distinct()
-            
-    #         # annotate(num_likes=Count('likes')) -> counts all the likes and stores them in the variable num_likes
-    #         # .filter(num_likes__gt=0) -> filters if the numk_likes is greater than 0 (gt0)
-    #         print("TESTTEST")
-    #         comments = release.comments.annotate(num_likes=Count('likes')).filter(num_likes__gt=0).order_by('-num_likes')
-    #     else:
-    #         comments = post.comments.all()
-    #     return render(request, 'snippets/loop_postpage_comments.html', {'comments': comments, 'replyform': replyform})
+    release = get_object_or_404(Release, id=pk)
+    cover_art_images = release.cover_art.all()
     
     context = {
-        'release' : release,
-        # 'commentform' : commentform,
-        # 'replyform' : replyform,
+        'release': release,
+        'cover_art_images': cover_art_images,
     }
+
     
-    return render(request, "a_collections/release_page.html", context)
+    return render(request, "a_collections/release_detail.html", context)
 
 @login_required
 def artist_create_view(request, *args, **kwargs):
@@ -198,7 +188,7 @@ def search_release(request):
             catalog_number = label_info[0].get('catalog-number', '') if label_info else ''
             barcode = release.get('barcode', '')
             language = release.get('text-representation', {}).get('language', '')
-            type = release['release-group']['primary-type'] if 'release-group' in release else ''
+            release_type = release['release-group']['primary-type'] if 'release-group' in release else ''
             status = release.get('status', '')
 
             # Initialize variables to accumulate CD and DVD track counts
@@ -218,8 +208,16 @@ def search_release(request):
 
                     if image_type and image_type[0] == "Front":
                         print(f"id: {image_id} | image: {image_url} | type: {image_type} | thumbnails_small: {thumbnails_small}")
-                        cover_art_images.append({'id': image_id, 'image': image_url, 'image_small': thumbnails_small, 'type': image_type})
+                        cover_art_images.append({
+                            'id': image_id,
+                            'image': image_url,
+                            'image_small': thumbnails_small,
+                            'type': image_type
+                        })
+                        # cover_art_images.append({'id': image_id, 'image': image_url, 'image_small': thumbnails_small, 'type': image_type})
                         print(cover_art_images)
+                        print(f"Dit gaat er als type naar de html template: {type(cover_art_images)}")
+                        
             else:
                 cover_art_images = []
 
@@ -260,10 +258,11 @@ def search_release(request):
             print("Country/Date:", country_date)
             print("Label:", label)
             print("Label_id:", label_id)
+
             print("Catalog#:", catalog_number)
             print("Barcode:", barcode)
             print("Language:", language)
-            print("Type:", type)
+            print("Release_type:", release_type)
             print("Status:", status)
             print()
 
@@ -282,12 +281,14 @@ def search_release(request):
                 'cd_tracks': cd_tracks,
                 'dvd_tracks': dvd_tracks,
                 'date': country_date,
+                
                 'label': label,
                 'label_id': label_id,
+
                 'catalog_number': catalog_number,
                 'barcode': barcode,
                 'language': language,
-                'type': type,
+                'release_type': release_type,
                 'status': status,
 
                 # cover art
@@ -330,14 +331,16 @@ def release_detail(request, release_id):
     return render(request, 'a_collections/release_detail.html', context)
 
 
+import json
+
 @login_required
 def add_artist_view(request):
+    cover_art_images = []
     if request.method == 'POST':
         release_id = request.POST.get('release_id')
         release_name = request.POST.get('release_name')
         artist_id = request.POST.get('artist_id')
         artist_name = request.POST.get('artist_name')
-        type = request.POST.get('type')
         format = request.POST.get('format')
         ext_score = request.POST.get('ext_score')
         barcode = request.POST.get('barcode')
@@ -347,30 +350,37 @@ def add_artist_view(request):
         catalog_number = request.POST.get('catalog_number')
         cd_tracks = request.POST.get('cd_tracks')
         dvd_tracks = request.POST.get('dvd_tracks')
-        cover_art_images = request.POST.get('cover_art_images')
+        cover_art_images_str = request.POST.get('cover_art_images')
+        label_name = request.POST.get('label')
+        label_id = request.POST.get('label_id')
 
-        print(f"id: {artist_id} | name: {artist_name} | type: {type} ext_score: {ext_score}")
-
-        # Check if the artist_id already exists in the database
+        print(f"id: {artist_id} | name: {artist_name} | ext_score: {ext_score}")
+        
         artist = Artist.objects.filter(musicbrainz_id=artist_id).first()
-        print(f"Artist: {artist}")
         existing_album = Release.objects.filter(musicbrainz_id=release_id).first()
-
-        # If the artist does not exist, create a new record
+        label = Record_Label.objects.filter(musicbrainz_id=label_id).first()
+        
         if not artist:
             artist = Artist.objects.create(
                 musicbrainz_id=artist_id,
                 name=artist_name,
-                type="",
                 ext_score=ext_score
             )
-            # Now the artist record is added to the database
             messages.success(request, f'Artist {artist} added successfully')  
 
         else:
-            # The artist already exists in the database
-            # You can choose to perform any other action here, if needed
             messages.success(request, f'Artist {artist_name} already in the database')  
+
+        if not label:
+            label = Record_Label.objects.create(
+                musicbrainz_id=label_id,
+                name=label_name,
+            )
+            messages.success(request, f'Record Label {label_name} added successfully')  
+            print(f'Record Label {label_name} added successfully')
+        else:
+            messages.success(request, f'Record Label {label_name} already in the database')
+            print(f'Record Label {label_name} already in the database')
 
         if not existing_album and release_id is not None:
             release = Release.objects.create(
@@ -385,31 +395,129 @@ def add_artist_view(request):
                 dvd_tracks = dvd_tracks,
                 format = format,
                 date = date,
+                record_label = label
             )
-            # Now the artist record is added to the database
-            messages.success(request, f'release {release} added successfully')  
+            messages.success(request, f'Release {release} added successfully')  
 
-        if release is not None and cover_art_images:
-            for image in cover_art_images:
-                print(f"image: {image}")
-                cover_art = Cover_Art.objects.create(
-                    musicbrainz_id = image.id,
-                    release = release,
-                    image_url = image.image, 
-                    image_small_url = image.image_small, 
-                    cover_art_type = image.type,
-                )
-            messages.success(request, f'cover art for {release} added successfully')
+        if cover_art_images_str:
+            try:
+                # Preprocess the string to replace single quotes with double quotes
+                cover_art_images_str = cover_art_images_str.replace("'", '"')
+                cover_art_images = json.loads(cover_art_images_str)
+                
+                for data in cover_art_images:
+                    cover_art = Cover_Art.objects.create(
+                        musicbrainz_id = data.get('id'),
+                        image_url = data.get('image'),
+                        image_small_url = data.get('image_small'),
+                        cover_art_type = data.get('type'),
+                        release = release,
+                    )
+                    # print(f"cover art: {cover_art}")
+                messages.success(request, f'Cover art for {release} added successfully')
+            except json.JSONDecodeError as e:
+                print("Error decoding cover_art_images JSON:", e)
 
         else: 
-            # The artist already exists in the database
-            # You can choose to perform any other action here, if needed
             if existing_album:
-                messages.success(request, f'release {existing_album} already in the database')  
+                messages.success(request, f'Release {existing_album} already in the database')  
+
+        return redirect('home')  
+    return redirect('home')
+
+# def add_artist_view(request):
+#     cover_art_images = []
+#     if request.method == 'POST':
+#         release_id = request.POST.get('release_id')
+#         release_name = request.POST.get('release_name')
+#         artist_id = request.POST.get('artist_id')
+#         artist_name = request.POST.get('artist_name')
+#         # type = request.POST.get('type')
+#         format = request.POST.get('format')
+#         ext_score = request.POST.get('ext_score')
+#         barcode = request.POST.get('barcode')
+#         date = request.POST.get('date')
+#         language = request.POST.get('language')
+#         status = request.POST.get('status')
+#         catalog_number = request.POST.get('catalog_number')
+#         cd_tracks = request.POST.get('cd_tracks')
+#         dvd_tracks = request.POST.get('dvd_tracks')
+#         cover_art_images = request.POST.get('cover_art_images')
+
+#         print(f"id: {artist_id} | name: {artist_name} | ext_score: {ext_score}")
+        
+
+#         # Check if the artist_id already exists in the database
+#         artist = Artist.objects.filter(musicbrainz_id=artist_id).first()
+#         print(f"Artist: {artist}")
+#         existing_album = Release.objects.filter(musicbrainz_id=release_id).first()
+
+#         # If the artist does not exist, create a new record
+#         if not artist:
+#             artist = Artist.objects.create(
+#                 musicbrainz_id=artist_id,
+#                 name=artist_name,
+#                 # type="",
+#                 ext_score=ext_score
+#             )
+#             # Now the artist record is added to the database
+#             messages.success(request, f'Artist {artist} added successfully')  
+
+#         else:
+#             # The artist already exists in the database
+#             # You can choose to perform any other action here, if needed
+#             messages.success(request, f'Artist {artist_name} already in the database')  
+
+#         if not existing_album and release_id is not None:
+#             release = Release.objects.create(
+#                 musicbrainz_id=release_id,
+#                 name=release_name,
+#                 artist=artist,
+#                 barcode = barcode,
+#                 catalog_number = catalog_number,
+#                 status = status,
+#                 language = language,
+#                 cd_tracks = cd_tracks,
+#                 dvd_tracks = dvd_tracks,
+#                 format = format,
+#                 date = date,
+#             )
+#             # Now the artist record is added to the database
+#             messages.success(request, f'release {release} added successfully')  
+
+#             if cover_art_images:
+#                 print(f"cover_art_images: {cover_art_images}")
+#                 print("Type of cover_art_images:", type(cover_art_images))
+
+#                 for data in cover_art_images:
+#                     print("###########")
+#                     print("###########")
+#                     print(f"cover art data: {data} <-- what data...")
+#                     print("###########")
+#                     print("###########")
+#                     cover_art = Cover_Art.objects.create(
+#                         musicbrainz_id = data.get('id'),
+#                         image_url = data.get('image'),
+#                         image_small_url = data.get('image_small'),
+#                         cover_art_type = data.get('type'),
+#                         # musicbrainz_id = data['id'],
+#                         # image_url = data['image'],
+#                         # image_small_url = data['image_small'],
+#                         # cover_art_type = data['type'],
+#                         release = release,
+#                     )
+#                     print(f"cover art: {cover_art}")
+#                 messages.success(request, f'cover art for {release} added successfully')
+
+#         else: 
+#             # The artist already exists in the database
+#             # You can choose to perform any other action here, if needed
+#             if existing_album:
+#                 messages.success(request, f'release {existing_album} already in the database')  
 
 
-        return redirect('home')  # Redirect to home page or any other page after adding artist
-    return redirect('home')  # Redirect to home page if not a POST request
+#         return redirect('home')  # Redirect to home page or any other page after adding artist
+#     return redirect('home')  # Redirect to home page if not a POST request
 
 
 @login_required

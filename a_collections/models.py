@@ -23,6 +23,7 @@ class Record_Label(models.Model):
         primary_key=True, default=uuid.uuid4, editable=False, max_length=100
     )
     name = models.CharField(max_length=255)
+    musicbrainz_id = models.CharField(unique=True, blank=True, null=True, max_length=255)
 
     def __str__(self):
         return self.name
@@ -88,7 +89,7 @@ class Collection(models.Model):
         related_name="collections",
     )
     release = models.ForeignKey(Release, on_delete=models.SET_NULL, null=True)
-    type  = models.IntegerField(choices=Condition.choices, default=1)
+    condition  = models.IntegerField(choices=Condition.choices, default=1)
     purchase_date = models.DateField(null=True, blank=True)
     purchase_price = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
 

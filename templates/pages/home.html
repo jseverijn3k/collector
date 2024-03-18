@@ -1,10 +1,19 @@
 {% extends 'layouts/a.html' %}
-
+{% load static %}
 {% block content %}
+<h2>Catalog your CDs and vinyl records</h2>
+
+<p>Welcome to Yovta Collector, your ultimate solution for effortlessly managing your collection. With its intuitive interface, Yovta Collector makes it easy to document your items. Simply create an account, add an item to your collection by entering the artist and release details (album, single, etc.), and let us do the rest.</p>
+
+<p>Our advanced system searches through the vast MusicBrainz database to find the perfect match for your entry. Once you've selected the best match from the list, Yovta seamlessly integrates it into your collection. It's that simple.</p>
+
+<p>Streamline your collecting experience with Yovta Collector today and unlock the full potential of your collection.</p>
+
+{% comment %} <img src="{% static 'images/karsten-winegeart-NZMZxCyfrXg-unsplash.jpg' %}" alt="Image"> {% endcomment %}
 
 <h2>This Week’s Most Popular Artists</h2>
 <ul>
-    {% for artist in artists %}
+    {% for artist in artists|slice:":7" %}
         <li>* {{artist}}</li>
     {% endfor %}
 </ul>
@@ -12,7 +21,7 @@
 
 <h2>This Week’s Most Collected</h2>
 <ul>
-    {% for album in albums %}
+    {% for album in albums|slice:"7" %}
         <li> * {{album}}</li>
     {% endfor %}
 </ul>

@@ -6,6 +6,8 @@
 <div class="card !p-8">
 
     {% comment %} {{results}} {% endcomment %}
+    {% comment %} {{cover_art_images}} {% endcomment %}
+    {{result.cover_art.all}}
     {% if results %}
     <table>
         <thead>
@@ -26,14 +28,13 @@
           </tr>
         </thead>
         <tbody>
-
+        
           {% for result in results %}
           <tr>
             <td>
-              {% comment %} {{result.cover_art_images}} {% endcomment %}
-              {% for image_info in result.cover_art_images %}
-                <img src="{{ image_info.image_small }}" alt="Cover Art" width="50" height="50">
-              {% endfor %}          
+                {% for cover_art in result.cover_art.all %}
+                <img src="{{ cover_art.image_small_url }}" alt="Cover Art" width="50" height="50">
+                {% endfor %}
             </td>
             <td>{{ result.ext_score }}</td>
             <td>{{ result.name }}</td>
@@ -41,33 +42,22 @@
             <td>{{ result.format }}</td>
             <td>{{ result.cd_tracks }} + {{ result.dvd_tracks }}</td>
             <td>{{ result.date }}</td>
-            <td>{{ result.label }}</td>
+            <td>{{ result.record_label }}</td>
             <td>{{ result.catalog_number }}</td>
             <td>{{ result.barcode }}</td>
             <td>{{ result.language }}</td>
             <td>{{ result.type }}</td>
             <td>{{ result.status }}</td>
             <td>
-                Detail...
-                <button type="submit">Detail</button>
-
-              {% comment %} <form method="post" action="{% url 'add_artist' %}">
-                {% csrf_token %}
-                <input type="hidden" name="ext_score" value="{{ result.ext_score }}">
-                <input type="hidden" name="release_id" value="{{ result.release_id }}">
-                <input type="hidden" name="release_name" value="{{ result.name }}">
-                <input type="hidden" name="artist_id" value="{{ result.artist_id }}">
-                <input type="hidden" name="artist_name" value="{{ result.artist }}">
-                <input type="hidden" name="format" value="{{ result.format }}">
-                <input type="hidden" name="result.cd_tracks" value="{{ result.cd_tracks }}">
-                <input type="hidden" name="dvd_tracks" value="{{ result.dvd_tracks }}">
-                <input type="hidden" name="type" value="{{ result.type }}">
-                <input type="hidden" name="barcode" value="{{ result.barcode }}">
-                <input type="hidden" name="catalog_number" value="{{ result.catalog_number }}">
-                <input type="hidden" name="language" value="{{ result.language }}">
-                <input type="hidden" name="status" value="{{ result.status }}">
-                <button type="submit">Add</button>
-              </form> {% endcomment %}
+                <a href="{% url 'release-page' pk=result.pk %}">
+                    <button type="button">Detail</button>
+                </a>
+            </td>
+            <td>
+                <form method="POST" action="{% url 'release-delete' pk=result.pk %}">
+                    {% csrf_token %}
+                    <button type="submit">Delete</button>
+                </form>
             </td>
           </tr>
           {% endfor %}
