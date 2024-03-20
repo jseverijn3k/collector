@@ -10,7 +10,7 @@ import csv
 from django.http import HttpResponse
 
 from a_collections.utils import artist_search, release_search
-from a_collections.models import Artist, Release, Cover_Art, Record_Label
+from a_collections.models import Artist, Release, Cover_Art, Record_Label, Collection
 from a_collections.forms import ReleaseCreateForm, ReleaseEditForm, ArtistCreateForm, ArtistEditForm
 
 # Create your views here.
@@ -56,6 +56,32 @@ def release_list_view(request, tag=None):
     }
     return render(request, "a_collections/release_list.html", context)
 
+@login_required
+def collection_list_view(request, tag=None):
+    user=request.user
+    results = Collection.objects.filter(user=user)
+
+    # Check if sort parameter is provided in the request
+    sort_param = request.GET.get('sort')
+    if sort_param == 'name':
+        results = results.order_by('release__name')
+    elif sort_param == 'artist':
+        results = results.order_by('release__artist__name')
+    elif sort_param == 'date':
+        results = results.order_by('release__date')
+    elif sort_param == 'label':
+        results = results.order_by('release__record_label__name')
+    elif sort_param == 'type':
+        results = results.order_by('release__type')
+
+    print(f"Collection of user {user}")
+    print(f"{results}")
+    context = {
+        'results' : results,
+
+    }
+    return render(request, "a_collections/collection_list.html", context)
+
 
 @login_required
 def release_create_view(request, *args, **kwargs):
@@ -77,14 +103,28 @@ def release_create_view(request, *args, **kwargs):
 @login_required
 def release_delete_view(request, pk):
     release = get_object_or_404(Release, id=pk)
+    cover_art = Cover_Art.objects.filter(release=release)
 
     if request.method == 'POST':
+        if cover_art:
+            cover_art.delete()
         release.delete()
-        messages.success(request, 'release deleted successfully')  
+        
+        messages.success(request, 'release and associated cover art deleted successfully')  
         return redirect('home')
     
     return render(request, "a_collections/release_delete.html", {'release' : release})
 
+@login_required
+def collection_delete_view(request, pk):
+    collection = get_object_or_404(Collection, id=pk)
+
+    if request.method == 'POST':
+        collection.delete()
+        messages.success(request, 'item removed successfully from collection')  
+        return redirect('home')
+    
+    return render(request, "a_collections/release_delete.html", {'collection' : collection})
 
 @login_required
 def release_edit_view(request, pk):
@@ -129,9 +169,20 @@ def release_page_view(request, pk):
         'release': release,
         'cover_art_images': cover_art_images,
     }
-
-    
     return render(request, "a_collections/release_detail.html", context)
+
+
+@login_required
+def collection_page_view(request, pk):
+    collection = get_object_or_404(Collection, id=pk)
+    cover_art_images = collection.release.cover_art.all()
+    
+    context = {
+        'collection': collection,
+        'cover_art_images': cover_art_images,
+    }
+    return render(request, "a_collections/collection_detail.html", context)
+
 
 @login_required
 def artist_create_view(request, *args, **kwargs):
@@ -175,6 +226,7 @@ def search_release(request):
         # Assuming 'result' is the dictionary containing the JSON data
         for release in results['release-list']:
             release_id = release.get('id', None)
+            # in_collection = Collection.objects.filter(release.musicbrainz_id = release_id)
             ext_score = release.get('ext:score', None)
             name = release.get('title', '')
 
@@ -336,6 +388,8 @@ import json
 @login_required
 def add_artist_view(request):
     cover_art_images = []
+    
+    # What do we need to add
     if request.method == 'POST':
         release_id = request.POST.get('release_id')
         release_name = request.POST.get('release_name')
@@ -356,8 +410,14 @@ def add_artist_view(request):
 
         print(f"id: {artist_id} | name: {artist_name} | ext_score: {ext_score}")
         
+        user = request.user
         artist = Artist.objects.filter(musicbrainz_id=artist_id).first()
-        existing_album = Release.objects.filter(musicbrainz_id=release_id).first()
+        release = Release.objects.filter(musicbrainz_id=release_id).first()
+        collection = Collection.objects.filter(release=release, user=user).first()
+        
+        if collection:
+            print(f"release already in collection {release} of user ")
+        
         label = Record_Label.objects.filter(musicbrainz_id=label_id).first()
         
         if not artist:
@@ -382,7 +442,7 @@ def add_artist_view(request):
             messages.success(request, f'Record Label {label_name} already in the database')
             print(f'Record Label {label_name} already in the database')
 
-        if not existing_album and release_id is not None:
+        if not release and release_id is not None:
             release = Release.objects.create(
                 musicbrainz_id=release_id,
                 name=release_name,
@@ -398,6 +458,14 @@ def add_artist_view(request):
                 record_label = label
             )
             messages.success(request, f'Release {release} added successfully')  
+        
+        # add release to collection
+        if not collection:
+            collection = Collection.objects.create(
+                release = release,
+                user = user,
+
+            )
 
         if cover_art_images_str:
             try:
@@ -406,21 +474,24 @@ def add_artist_view(request):
                 cover_art_images = json.loads(cover_art_images_str)
                 
                 for data in cover_art_images:
-                    cover_art = Cover_Art.objects.create(
-                        musicbrainz_id = data.get('id'),
-                        image_url = data.get('image'),
-                        image_small_url = data.get('image_small'),
-                        cover_art_type = data.get('type'),
-                        release = release,
-                    )
-                    # print(f"cover art: {cover_art}")
-                messages.success(request, f'Cover art for {release} added successfully')
+                    musicbrainz_id = data.get('id'),
+                    cover_art = Cover_Art.objects.filter( musicbrainz_id = musicbrainz_id).first()
+                    if not cover_art:
+                        cover_art = Cover_Art.objects.create(
+                            musicbrainz_id = data.get('id'),
+                            image_url = data.get('image'),
+                            image_small_url = data.get('image_small'),
+                            cover_art_type = data.get('type'),
+                            release = release,
+                        )
+                        # print(f"cover art: {cover_art}")
+                        messages.success(request, f'Cover art for {release} added successfully')
             except json.JSONDecodeError as e:
                 print("Error decoding cover_art_images JSON:", e)
 
         else: 
-            if existing_album:
-                messages.success(request, f'Release {existing_album} already in the database')  
+            if release:
+                messages.success(request, f'Release {release} already in the database')  
 
         return redirect('home')  
     return redirect('home')

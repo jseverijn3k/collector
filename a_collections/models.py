@@ -90,11 +90,13 @@ class Collection(models.Model):
     )
     release = models.ForeignKey(Release, on_delete=models.SET_NULL, null=True)
     condition  = models.IntegerField(choices=Condition.choices, default=1)
+    date_added = models.DateField(null=True, blank=True)
+    description = models.TextField()
     purchase_date = models.DateField(null=True, blank=True)
     purchase_price = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.user.realname} | {self.type} | {self.release.title} | {self.release.artist.name}"
+        return f"{self.id} | {self.user} | {self.condition} | {self.release.name} | {self.release.artist.name}"
 
 
 class Tag(models.Model):
