@@ -2,69 +2,29 @@
 {% load static %}
 
 {% block content %}
-
-<h1>Collection of {{request.user}}</h1>
 <div class="card !p-8">
+  <h1>Collection of {{request.user}}</h1>
 
-    {% comment %} {{results}} {% endcomment %}
-    {% comment %} {{cover_art_images}} {% endcomment %}
-    {% comment %} {{result.cover_art.all}} {% endcomment %}
-    {% if results %}
-    <table>
-        <thead>
-          <tr>
-            <th>Cover Art</th>
-            {% comment %} <th>Match</th> {% endcomment %}
-            <th>Name <a href="?sort=name">▲</a></th>
-            <th>Artist <a href="?sort=artist">▲</a></th>
-            <th>Format</th>
-            <th>Tracks</th>
-            <th>Date <a href="?sort=date">▲</a></th>
-            <th>Label <a href="?sort=label">▲</a></th>
-            {% comment %} <th>Catalog#</th>
-            <th>Barcode</th> {% endcomment %}
-            <th>Lng</th>
-            <th>Type <a href="?sort=type">▲</a></th>
-            {% comment %} <th>Status</th> {% endcomment %}
-          </tr>
-        </thead>
-        <tbody>
-        
-          {% for result in results %}
-          {% comment %} {{result}} {% endcomment %}
-          <tr>
-            <td>
-                {% for cover_art in result.cover_art.all %}
-                <img src="{{ cover_art.image_small_url }}" alt="Cover Art" width="50" height="50">
-                {% endfor %}
-            </td>
-            {% comment %} <td>{{ result.release.ext_score }}</td> {% endcomment %}
-            <td>{{ result.release.name }}</td>
-            <td>{{ result.release.artist }}</td>
-            <td>{{ result.release.format }}</td>
-            <td>{{ result.release.cd_tracks }} + {{ result.release.dvd_tracks }}</td>
-            <td>{{ result.release.date }}</td>
-            <td>{{ result.release.record_label }}</td>
-            {% comment %} <td>{{ result.release.catalog_number }}</td>
-            <td>{{ result.release.barcode }}</td> {% endcomment %}
-            <td>{{ result.release.language }}</td>
-            <td>{{ result.release.type }}</td>
-            {% comment %} <td>{{ result.release.status }}</td> {% endcomment %}
-            <td>
-                <a href="{% url 'collection-page' pk=result.id %}">
-                    <button type="button">Detail</button>
-                </a>
-            </td>
-            <td>
-                <form method="POST" action="{% url 'collection-delete' pk=result.id %}">
-                    {% csrf_token %}
-                    <button type="submit">Delete</button>
-                </form>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% endif %} 
-</div>
+  <!-- Search form -->
+  <form id="search-form" hx-post="{% url 'collection-list' %}" hx-target="#results-container" hx-swap="innerHTML" hx-boost="true">
+    {% csrf_token %}
+    <label for="artist_name">Artist Name:</label>
+    <input type="text" name="artist" placeholder="Search by artist">
+    <br>
+    <label for="album_name">Album Name:</label>
+    <input type="text" name="album" placeholder="Search by album name">
+    <br>
+    <br>
+    <button type="submit" hx-vals="#search-form input" hx-trigger="click">Search</button>
+    <button type="submit" name="reset" value="true" hx-trigger="click">Reset</button>
+  </form>
+
+
+
+
+  <div id="results-container" class="card !p-8">
+    {% include 'a_collections/partials/results_table.html' %}
+  </div>
+
+</div> 
 {% endblock %}

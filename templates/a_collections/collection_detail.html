@@ -22,18 +22,6 @@
 <p>Status: {{ collection.release.status }}</p>
 <p>Tracks: {{ collection.release.cd_tracks }} {% if collection.release.dvd_tracks > 0 %} CD + {{ collection.release.dvd_tracks }} DVD{% endif %}</p>
 
-{% comment %} <br> {% endcomment %}
-<!-- Display cover art images -->
-{% comment %} <h2>Cover Art</h2>
-    <div class="cover-art-container">
-        {% for cover_art in cover_art_images %}
-            <img src="{{ cover_art.image_url }}" alt="Cover Art" width="200">
-            [{{cover_art.cover_art_type}}]
-        {% empty %}
-            <p>No cover art available</p>
-        {% endfor %}
-    </div> {% endcomment %}
-
 
 <!-- Back button -->
 <button onclick="goBack()">Back</button>

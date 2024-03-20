@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib import messages
+from django.db.models import Prefetch, Q
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
@@ -56,11 +57,64 @@ def release_list_view(request, tag=None):
     }
     return render(request, "a_collections/release_list.html", context)
 
+
 @login_required
 def collection_list_view(request, tag=None):
-    user=request.user
+    user = request.user
     results = Collection.objects.filter(user=user)
 
+    # Prefetch related release and cover art
+    results = results.select_related('release').prefetch_related(
+        Prefetch('release__cover_art', queryset=Cover_Art.objects.all())
+    )
+
+    # Check if reset button was clicked
+    reset = request.POST.get('reset') or request.GET.get('reset')
+    print(f"reset : {reset}")
+    print(f"request.POST: {request.POST}")
+    print(f"request.GET: {request.GET}")
+    query_params = request.POST.copy()
+    print("###########")
+    print(f"query_params: {query_params}")
+    print("###########")
+    if reset:
+        # Reset the query to return all results
+        print("###########")
+        print("###########")
+        print("###########")
+        print(f"RESET")
+        results = Collection.objects.filter(user=user)
+        context = {'results': results}
+        if request.htmx:
+            return render(request, "a_collections/partials/results_table.html", context)
+        else:
+            return render(request, "a_collections/collection_list.html", context)
+
+
+    # Check if search parameters are provided in the request
+    if request.method == 'POST':
+        if 'reset' in request.POST:
+            # Clear the search parameters
+            query_params.pop('artist', None)
+            query_params.pop('album', None)
+            query_params.pop('sort', None)
+
+        artist = request.POST.get('artist')
+        album = request.POST.get('album')
+
+        if artist:
+            results = results.filter(release__artist__name__icontains=artist)
+        if album:
+            results = results.filter(release__name__icontains=album)
+
+        print(f"artist: {artist}")
+        print(f"album: {album}")
+        
+        context = {'results': results}
+
+         # If the request is AJAX (e.g., htmx request), return only the table part of the HTML
+        
+    
     # Check if sort parameter is provided in the request
     sort_param = request.GET.get('sort')
     if sort_param == 'name':
@@ -74,14 +128,13 @@ def collection_list_view(request, tag=None):
     elif sort_param == 'type':
         results = results.order_by('release__type')
 
-    print(f"Collection of user {user}")
-    print(f"{results}")
-    context = {
-        'results' : results,
+    # print(f"Collection of user {user}")
+    # print(f"{results}")
+    context = {'results': results}
+    if request.htmx:
+        return render(request, "a_collections/partials/results_table.html", context)
 
-    }
     return render(request, "a_collections/collection_list.html", context)
-
 
 @login_required
 def release_create_view(request, *args, **kwargs):
@@ -259,16 +312,14 @@ def search_release(request):
                     image_type = image_data.get('types', [])
 
                     if image_type and image_type[0] == "Front":
-                        print(f"id: {image_id} | image: {image_url} | type: {image_type} | thumbnails_small: {thumbnails_small}")
+                        print(f"id: {image_id} | image: {image_url} | type: {image_type[0]} | thumbnails_small: {thumbnails_small}")
                         cover_art_images.append({
                             'id': image_id,
                             'image': image_url,
                             'image_small': thumbnails_small,
-                            'type': image_type
+                            'type': image_type[0]
                         })
                         # cover_art_images.append({'id': image_id, 'image': image_url, 'image_small': thumbnails_small, 'type': image_type})
-                        print(cover_art_images)
-                        print(f"Dit gaat er als type naar de html template: {type(cover_art_images)}")
                         
             else:
                 cover_art_images = []

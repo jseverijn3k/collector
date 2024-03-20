@@ -38,6 +38,7 @@ urlpatterns = [
     path('', home_view, name='home'),
 
     path('collection/list', collection_list_view, name='collection-list'),
+
     path('collection/<pk>', collection_page_view, name='collection-page'),
     # path('release/create/', release_create_view, name='release-create'),
     path('collection/delete/<pk>', collection_delete_view, name='collection-delete'),
