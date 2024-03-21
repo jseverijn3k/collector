@@ -1,17 +1,38 @@
 {% extends 'layouts/a.html' %}
 {% load static %}
 {% block content %}
-<h2>Catalog your CDs and vinyl records</h2>
+{% comment %} <h2>Catalog your CDs and vinyl records</h2>
 
 <p>Welcome to Yovta Collector, your ultimate solution for effortlessly managing your collection. With its intuitive interface, Yovta Collector makes it easy to document your items. Simply create an account, add an item to your collection by entering the artist and release details (album, single, etc.), and let us do the rest.</p>
 
 <p>Our advanced system searches through the vast MusicBrainz database to find the perfect match for your entry. Once you've selected the best match from the list, Yovta seamlessly integrates it into your collection. It's that simple.</p>
 
-<p>Streamline your collecting experience with Yovta Collector today and unlock the full potential of your collection.</p>
+<p>Streamline your collecting experience with Yovta Collector today and unlock the full potential of your collection.</p> {% endcomment %}
 
 {% comment %} <img src="{% static 'images/karsten-winegeart-NZMZxCyfrXg-unsplash.jpg' %}" alt="Image"> {% endcomment %}
 
-<h2>This Week’s Most Popular Artists</h2>
+<h2>Echoes of Quality: The Timeless Appeal of CDs</h2>
+
+<p>In a world where convenience often takes precedence over quality, the allure of instant streaming services like Spotify can be irresistible. With millions of songs at our fingertips, it's easy to overlook the subtleties that come with a physical music collection. Yet, buried beneath the surface of convenience lies a treasure trove waiting to be rediscovered—the humble compact disc.</p>
+
+<p>Picture this: you're settling into your favorite armchair, a warm cup of tea in hand, ready to indulge in your favorite album. As you press play on your CD player, the room fills with a rich, vibrant sound that envelops you entirely. This, dear listener, is the magic of CDs—a depth of sound that streaming services simply cannot replicate.</p>
+
+<p>Sound quality is perhaps the most compelling reason to embrace CDs. Unlike compressed digital files streamed online, CDs offer uncompressed audio, preserving every nuance of the original recording. From the delicate pluck of a guitar string to the soaring crescendo of an orchestra, every note resonates with clarity and precision. It's an experience that transcends mere listening—it's a journey into the heart of music itself.</p>
+
+<p>But what about the cost, you might ask? In the long run, investing in CDs can actually save you money. While streaming services often come with monthly subscription fees that can add up over time, CDs offer a one-time purchase that lasts a lifetime. Once you own a CD, it's yours to enjoy whenever and wherever you please, without the looming specter of a recurring bill.</p>
+
+<p>Beyond the realm of sound quality and costs lies another aspect of CD ownership—the joy of building and curating your own music collection. Each CD is more than just a disc; it's a piece of history, a tangible artifact that reflects your unique tastes and interests. From classic albums that shaped generations to hidden gems waiting to be discovered, every addition to your collection tells a story, weaving a tapestry of musical memories.</p>
+
+<p>But with a growing collection comes the challenge of organization. How do you keep track of every CD, ensuring that each one receives the attention it deserves? This is where the diligent collector steps in, armed with the perfect tool to catalog their treasures—Yovita Collector.</p>
+
+<p>Yovita Collector is more than just a cataloging software; it's a sanctuary for music lovers, a digital haven where collections come to life. With its intuitive interface and robust features, Yovita Collector makes organizing your CDs a breeze. Simply scan the barcode of each CD, and watch as its information is automatically added to your catalog. From album titles to track listings, every detail is meticulously recorded, allowing you to browse and explore your collection with ease.</p>
+
+<p>But Yovita Collector is more than just a digital database—it's a community of fellow collectors, united by a shared passion for music. Connect with like-minded enthusiasts, share recommendations, and discover new artists together. With Yovita Collector, the possibilities are endless, offering a world of music waiting to be explored.</p>
+
+<p>So, dear listener, as you ponder the endless sea of streaming services, remember the timeless appeal of CDs. Embrace the warmth of uncompressed audio, the joy of building your own music collection, and the convenience of Yovita Collector. In a world that's constantly changing, some things remain unchanged—the power of music to inspire, to uplift, and to connect us all.</p>
+
+
+{% comment %} <h2>This Week’s Most Popular Artists</h2>
 <ul>
     {% for artist in artists|slice:":7" %}
         <li>* {{artist}}</li>
@@ -24,5 +45,5 @@
     {% for album in albums|slice:"7" %}
         <li> * {{album}}</li>
     {% endfor %}
-</ul>
+</ul> {% endcomment %}
 {% endblock %}

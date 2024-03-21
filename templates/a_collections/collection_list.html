@@ -3,8 +3,15 @@
 
 {% block content %}
 <div class="card !p-8">
-  <h1>Collection of {{request.user}}</h1>
-
+  <div class="flex justify-between items-center">
+    <h1 class="text-left">Collection of {{ request.user }}</h1>
+    <a href="{% url 'release-create' %}">
+      <button type="submit">
+        Add
+      </button>
+    </a>
+  </div>
+  
   <!-- Search form -->
   <form id="search-form" hx-post="{% url 'collection-list' %}" hx-target="#results-container" hx-swap="innerHTML" hx-boost="true">
     {% csrf_token %}
@@ -18,8 +25,6 @@
     <button type="submit" hx-vals="#search-form input" hx-trigger="click">Search</button>
     <button type="submit" name="reset" value="true" hx-trigger="click">Reset</button>
   </form>
-
-
 
 
   <div id="results-container" class="card !p-8">

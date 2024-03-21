@@ -3,25 +3,26 @@
     <table>
         <thead>
           <tr>
-            <th>Cover Art</th>
+            <th class="hidden-mobile">Cover</th>
             {% comment %} <th>Match</th> {% endcomment %}
             <th>Name <a href="?sort=name">▲</a></th>
             <th>Artist <a href="?sort=artist">▲</a></th>
             <th>Format</th>
-            <th>Tracks</th>
-            <th>Date <a href="?sort=date">▲</a></th>
+            <th class="hidden-mobile">Tracks</th>
+            <th class="hidden-mobile">Date <a href="?sort=date">▲</a></th>
             <th>Label <a href="?sort=label">▲</a></th>
             {% comment %} <th>Catalog#</th>
             <th>Barcode</th> {% endcomment %}
-            <th>Lng</th>
-            <th>Type <a href="?sort=type">▲</a></th>
+            {% comment %} <th>Lng</th> {% endcomment %}
+            <th class="hidden-mobile">Lng</th>
+            <th class="hidden-mobile">Type <a href="?sort=type">▲</a></th>
             {% comment %} <th>Status</th> {% endcomment %}
           </tr>
         </thead>
         <tbody>
           {% for result in results %}
           <tr>
-            <td>
+            <td class="hidden-mobile">
                 {% for cover_art in result.release.cover_art.all %}
                 <img src="{{ cover_art.image_small_url }}" alt="Cover Art" width="50" height="50">
                 {% endfor %}
@@ -29,11 +30,13 @@
             <td>{{ result.release.name }}</td>
             <td>{{ result.release.artist }}</td>
             <td>{{ result.release.format }}</td>
-            <td>{{ result.release.cd_tracks }} + {{ result.release.dvd_tracks }}</td>
-            <td>{{ result.release.date }}</td>
+            <td class="hidden-mobile">{{ result.release.cd_tracks }} {% if result.release.dvd_tracks > 0 %} + {{ result.release.dvd_tracks }} {% endif %}</td>
+            <td class="hidden-mobile">{{ result.release.date }}</td>
             <td>{{ result.release.record_label }}</td>
-            <td>{{ result.release.language }}</td>
-            <td>{{ result.release.type }}</td>
+            {% comment %} <td>{{ result.release.language }}</td> {% endcomment %}
+            <td class="hidden-mobile">{{ result.release.language }}</td>
+
+            <td class="hidden-mobile">{{ result.release.type }}</td>
             <td>
                 <a href="{% url 'collection-page' pk=result.id %}">
                     <button type="button">Detail</button>
@@ -51,3 +54,13 @@
       </table>
     {% endif %}
   </div>
+
+
+<style>
+  /* Hide certain columns on mobile devices */
+  @media only screen and (max-width: 600px) {
+    .hidden-mobile {
+      display: none;
+    }
+  }
+  </style>

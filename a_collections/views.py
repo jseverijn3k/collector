@@ -70,19 +70,7 @@ def collection_list_view(request, tag=None):
 
     # Check if reset button was clicked
     reset = request.POST.get('reset') or request.GET.get('reset')
-    print(f"reset : {reset}")
-    print(f"request.POST: {request.POST}")
-    print(f"request.GET: {request.GET}")
-    query_params = request.POST.copy()
-    print("###########")
-    print(f"query_params: {query_params}")
-    print("###########")
     if reset:
-        # Reset the query to return all results
-        print("###########")
-        print("###########")
-        print("###########")
-        print(f"RESET")
         results = Collection.objects.filter(user=user)
         context = {'results': results}
         if request.htmx:
@@ -93,12 +81,6 @@ def collection_list_view(request, tag=None):
 
     # Check if search parameters are provided in the request
     if request.method == 'POST':
-        if 'reset' in request.POST:
-            # Clear the search parameters
-            query_params.pop('artist', None)
-            query_params.pop('album', None)
-            query_params.pop('sort', None)
-
         artist = request.POST.get('artist')
         album = request.POST.get('album')
 
@@ -112,24 +94,46 @@ def collection_list_view(request, tag=None):
         
         context = {'results': results}
 
-         # If the request is AJAX (e.g., htmx request), return only the table part of the HTML
-        
     
     # Check if sort parameter is provided in the request
     sort_param = request.GET.get('sort')
     if sort_param == 'name':
-        results = results.order_by('release__name')
+        # Toggle between ascending and descending order for release name
+        if request.session.get('sort_order', '') == 'asc':
+            request.session['sort_order'] = 'desc'
+            results = results.order_by('-release__name')
+        else:
+            request.session['sort_order'] = 'asc'
+            results = results.order_by('release__name')
     elif sort_param == 'artist':
-        results = results.order_by('release__artist__name')
+        if request.session.get('sort_order', '') == 'asc':
+            request.session['sort_order'] = 'desc'
+            results = results.order_by('-release__artist__name')
+        else:
+            request.session['sort_order'] = 'asc'
+            results = results.order_by('release__artist__name')
     elif sort_param == 'date':
-        results = results.order_by('release__date')
+        if request.session.get('sort_order', '') == 'asc':
+            request.session['sort_order'] = 'desc'
+            results = results.order_by('-release__date')
+        else:
+            request.session['sort_order'] = 'asc'
+            results = results.order_by('release__date')
     elif sort_param == 'label':
-        results = results.order_by('release__record_label__name')
+        if request.session.get('sort_order', '') == 'asc':
+            request.session['sort_order'] = 'desc'
+            results = results.order_by('-release__record_label__name')
+        else:
+            request.session['sort_order'] = 'asc'
+            results = results.order_by('release__record_label__name')
     elif sort_param == 'type':
-        results = results.order_by('release__type')
+        if request.session.get('sort_order', '') == 'asc':
+            request.session['sort_order'] = 'desc'
+            results = results.order_by('-release__type')
+        else:
+            request.session['sort_order'] = 'asc'
+            results = results.order_by('release__type')
 
-    # print(f"Collection of user {user}")
-    # print(f"{results}")
     context = {'results': results}
     if request.htmx:
         return render(request, "a_collections/partials/results_table.html", context)
@@ -544,8 +548,8 @@ def add_artist_view(request):
             if release:
                 messages.success(request, f'Release {release} already in the database')  
 
-        return redirect('home')  
-    return redirect('home')
+        return redirect('collection-list')  
+    return redirect('collection-list')
 
 # def add_artist_view(request):
 #     cover_art_images = []
