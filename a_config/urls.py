@@ -38,6 +38,8 @@ urlpatterns = [
     path('', home_view, name='home'),
 
     path('collection/list', collection_list_view, name='collection-list'),
+    path('results_table/',  collection_list_view, name='results_table'),
+    path('results_cover/',  collection_list_view, name='results_cover'),
 
     path('collection/<pk>', collection_page_view, name='collection-page'),
     # path('release/create/', release_create_view, name='release-create'),
@@ -50,11 +52,12 @@ urlpatterns = [
     path('release/edit/<pk>', release_edit_view, name='release-edit'),
 
     path('artist/create/', artist_create_view, name='artist-create'),
-    path('create_artist/', artist_create_view, name='create_artist'),
+    # path('create_artist/', artist_create_view, name='create_artist'),
     path('search_artist/', search_artist, name='search_artist'),
     path('add_artist/', add_artist_view, name='add_artist'),
     path('search_release/', search_release, name='search_release'),
 
+    #TODO: barcode scanner
     path('barcode_scanner/', barcode_scanner, name='barcode_scanner'),
     path('scan_barcode/', scan_barcode, name='scan_barcode'),
 

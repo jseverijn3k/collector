@@ -23,9 +23,15 @@
           {% for result in results %}
           <tr>
             <td class="hidden-mobile">
-                {% for cover_art in result.release.cover_art.all %}
-                <img src="{{ cover_art.image_small_url }}" alt="Cover Art" width="50" height="50">
-                {% endfor %}
+              {% with first_cover_art=result.release.cover_art.first %}
+                  {% if first_cover_art %}
+                      <img src="{{ first_cover_art.image }}" alt="Cover Art" width="50" height="50">
+                  {% endif %}
+              {% endwith %}
+              {% comment %}   
+              {% for cover_art in result.release.cover_art.all %}
+                  <img src="{{ cover_art.image }}" alt="Cover Art" width="50" height="50">
+                {% endfor %} {% endcomment %}
             </td>
             <td>{{ result.release.name }}</td>
             <td>{{ result.release.artist }}</td>

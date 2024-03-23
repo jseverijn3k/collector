@@ -4,7 +4,7 @@
 <div class="cover-art-container">
     {% if cover_art_images %}
         {% with first_cover_art=cover_art_images.first %}
-            <img src="{{ first_cover_art.image_url }}" alt="Cover Art" width="200">
+            <img src="{{ first_cover_art.image }}" alt="Cover Art" width="200">
         {% endwith %}
     {% else %}
         <p>No cover art available</p>

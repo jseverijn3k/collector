@@ -5,6 +5,16 @@
 <div class="card !p-8">
   <div class="flex justify-between items-center">
     <h1 class="text-left">Collection of {{ request.user }}</h1>
+     {% comment %} <a href="#" hx-get="{% url 'collection-list' %}" hx-target="#results-container" hx-swap="innerHTML"> {% endcomment %}
+      
+      <button type="button" hx-trigger="click" hx-get="{% url 'collection-list' %}?data-template=a_collections/partials/results_table.html" hx-target="#results-container" hx-swap="innerHTML">
+        List View
+      </button>
+      
+      <button type="button" hx-trigger="click" hx-get="{% url 'collection-list' %}?data-template=a_collections/partials/results_cover.html" hx-target="#results-container" hx-swap="innerHTML">
+        Cover View
+      </button>
+            
     <a href="{% url 'release-create' %}">
       <button type="submit">
         Add
@@ -29,6 +39,7 @@
 
   <div id="results-container" class="card !p-8">
     {% include 'a_collections/partials/results_table.html' %}
+    {% comment %} {% include 'a_collections/partials/results_cover.html' %} {% endcomment %}
   </div>
 
 </div> 

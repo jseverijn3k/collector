@@ -61,10 +61,21 @@ class Release(models.Model):
         return f"{self.name} | {self.artist.name}"
 
 
+class Track(models.Model):
+    release = models.ForeignKey(Release, on_delete=models.CASCADE, related_name='tracks')
+    title = models.CharField(max_length=255)
+    position = models.IntegerField()
+    duration = models.CharField(max_length=20, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.title} - {self.release.name}"
+    
+
 class Cover_Art(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     musicbrainz_id = models.CharField(unique=True, blank=True, null=True, max_length=255)
     release = models.ForeignKey(Release, on_delete=models.CASCADE, related_name="cover_art")
+    image = models.ImageField(upload_to='cover_art/', null=True, blank=True)
     image_url = models.URLField()  # url to the coverartarchive website
     image_small_url = models.URLField()  # url to the coverartarchive website
     cover_art_type = models.CharField(blank=True, null=True, max_length=255) # Front, Back, etc...

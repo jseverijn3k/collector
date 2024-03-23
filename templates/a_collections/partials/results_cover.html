@@ -1,0 +1,25 @@
+<div id="results-table" class="grid grid-cols-5 gap-4">
+  {% if results %}
+      {% for result in results %}
+          <div class="relative">
+              <a href="{% url 'collection-page' pk=result.id %}">
+                  {% comment %} {% for cover_art in result.release.cover_art.all %}
+                      <img src="{{ cover_art.image }}" alt="Cover Art" class="w-full" width="50" height="50">
+                  {% endfor %} {% endcomment %}
+                  {% with first_cover_art=result.release.cover_art.first %}
+                    {% if first_cover_art %}
+                        <img src="{{ first_cover_art.image }}" alt="Cover Art" width="250" height="250">
+                    {% endif %}
+                {% endwith %}
+              </a>
+              <div class="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition duration-300 bg-black bg-opacity-50">
+                  <a href="{% url 'collection-page' pk=result.id %}">
+                      <button type="button" class="text-white font-bold py-2 px-4 rounded">
+                          Detail
+                      </button>
+                  </a>
+              </div>
+          </div>
+      {% endfor %}
+  {% endif %}
+</div>

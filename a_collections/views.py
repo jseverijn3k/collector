@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib import messages
 from django.db.models import Prefetch, Q
+from django.conf import settings
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
@@ -8,6 +9,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 import requests 
 import csv
+import os
+import requests
+import shutil
 from django.http import HttpResponse
 
 from a_collections.utils import artist_search, release_search
@@ -67,6 +71,13 @@ def collection_list_view(request, tag=None):
     results = results.select_related('release').prefetch_related(
         Prefetch('release__cover_art', queryset=Cover_Art.objects.all())
     )
+    # Retrieve only the first cover art image for each release
+    for result in results:
+        if result.release.cover_art.exists():
+            result.first_cover_art = result.release.cover_art.first()
+        else:
+            result.first_cover_art = None
+
 
     # Check if reset button was clicked
     reset = request.POST.get('reset') or request.GET.get('reset')
@@ -74,7 +85,11 @@ def collection_list_view(request, tag=None):
         results = Collection.objects.filter(user=user)
         context = {'results': results}
         if request.htmx:
-            return render(request, "a_collections/partials/results_table.html", context)
+            data_template = request.GET.get('data-template', 'a_collections/partials/results_table.html')
+            print(data_template)
+            return render(request, data_template, context)
+
+            # return render(request, "a_collections/partials/results_table.html", context)
         else:
             return render(request, "a_collections/collection_list.html", context)
 
@@ -136,7 +151,12 @@ def collection_list_view(request, tag=None):
 
     context = {'results': results}
     if request.htmx:
-        return render(request, "a_collections/partials/results_table.html", context)
+        data_template = request.GET.get('data-template', 'a_collections/partials/results_cover.html')
+        
+        print("Data template received:", data_template)  # Add debug print
+
+        return render(request, data_template, context)
+        # return render(request, "a_collections/partials/results_table.html", context)
 
     return render(request, "a_collections/collection_list.html", context)
 
@@ -217,7 +237,41 @@ def get_cover_art_urls(release_id):
     else:
         return None
 
+# def get_cover_art_urls(release_id):
+#     # Construct the URL for the cover art images using the release ID
+#     cover_art_url = f"https://coverartarchive.org/release/{release_id}"
+#     print(f"cover art url: {cover_art_url}")
     
+#     # Send GET request to the cover art archive
+#     response = requests.get(cover_art_url)
+
+#     # Check if request was successful and cover art exists
+#     if response.status_code == 200:
+#         # Parse JSON data
+#         json_data = response.json()
+
+#         # Download cover art image
+#         image_url = json_data.get('images', [{}])[0].get('image', '')
+#         if image_url:
+#             image_response = requests.get(image_url, stream=True)
+#             print(f"Image response: {image_response.status_code} | {image_response}")
+
+#             if image_response.status_code == 200:
+#                 # Save image to hard drive
+#                 file_path = f"cover_art_{release_id}.jpg"
+#                 with open(file_path, 'wb') as f:
+#                     image_response.raw.decode_content = True
+#                     shutil.copyfileobj(image_response.raw, f)
+
+#                 print(f"Image file path: {file_path}")
+#                 # Add file URL to JSON data
+#                 json_data['file_url'] = file_path
+
+#         return json_data  # Return the JSON data along with file URL
+#     else:
+#         return None
+
+
 def release_page_view(request, pk):
     release = get_object_or_404(Release, id=pk)
     cover_art_images = release.cover_art.all()
@@ -531,14 +585,64 @@ def add_artist_view(request):
                 for data in cover_art_images:
                     musicbrainz_id = data.get('id'),
                     cover_art = Cover_Art.objects.filter( musicbrainz_id = musicbrainz_id).first()
+                    # print(f"covert art: {cover_art}")
+
                     if not cover_art:
+
+                        # Download cover art image
+                        cover_art_url = data.get('image'),
+                        print("###################")
+                        print("###################")
+                        print("###################")
+                        print(f"cover art image url for large image: {cover_art_url}")
+                        first_url_string = str(cover_art_url[0])
+                        print(f"cover art image url for large image: {first_url_string}")
+                        print(f"cover art image url type large image: {type(first_url_string)}")
+                        
+                        # Download the image from the URL
+                        response = requests.get(first_url_string)
+                        print(f"response: {response}")
+
+                        if response.status_code == 200:
+                            # Define the filename for the downloaded image
+                            filename = f"cover_art_{release_id}.jpg"
+                            print(f"filename: {filename}")
+
+                            # Define the file path in the media folder
+                            folder_path = os.path.join(settings.MEDIA_ROOT, "cover_art")
+                            
+                            # Create the folder if it doesn't exist
+                            os.makedirs(folder_path, exist_ok=True)
+                            
+                            file_path = os.path.join(folder_path, filename)
+                            print(f"file path: {file_path}")
+                            
+                            # Save the image to the media folder
+                            with open(file_path, 'wb') as f:
+                                f.write(response.content)                        
+
+                        # store new cover art object
                         cover_art = Cover_Art.objects.create(
                             musicbrainz_id = data.get('id'),
+                            image=os.path.join(settings.MEDIA_URL, "cover_art", filename),
                             image_url = data.get('image'),
                             image_small_url = data.get('image_small'),
                             cover_art_type = data.get('type'),
                             release = release,
                         )
+
+                       
+                        # if image_url:
+                        #     image_response = requests.get(image_url, stream=True)
+                        #     if image_response.status_code == 200:
+                        #         # Save image to media folder
+                        #         file_name = f"cover_art_{release_id}.jpg"
+                        #         file_path = os.path.join(settings.MEDIA_ROOT, file_name)
+                        #         with open(file_path, 'wb') as f:
+                        #             image_response.raw.decode_content = True
+                        #             shutil.copyfileobj(image_response.raw, f)
+
+
                         # print(f"cover art: {cover_art}")
                         messages.success(request, f'Cover art for {release} added successfully')
             except json.JSONDecodeError as e:
