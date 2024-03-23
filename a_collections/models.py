@@ -17,6 +17,9 @@ class Artist(models.Model):
     def __str__(self):
         return self.name
     
+    class Meta:
+        ordering = ['name']
+
     
 class Record_Label(models.Model):
     id = models.UUIDField(
@@ -60,16 +63,24 @@ class Release(models.Model):
     def __str__(self):
         return f"{self.name} | {self.artist.name}"
 
+    class Meta:
+        ordering = ['name' , 'artist']
+
 
 class Track(models.Model):
+    musicbrainz_id = models.CharField(unique=True, blank=True, null=True, max_length=255)
     release = models.ForeignKey(Release, on_delete=models.CASCADE, related_name='tracks')
     title = models.CharField(max_length=255)
     position = models.IntegerField()
     duration = models.CharField(max_length=20, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.title} - {self.release.name}"
+        return f"{self.release.name} - {self.position} - {self.title}"
     
+
+    class Meta:
+        ordering = ['release' , 'position']
+
 
 class Cover_Art(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -107,7 +118,7 @@ class Collection(models.Model):
     purchase_price = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.id} | {self.user} | {self.condition} | {self.release.name} | {self.release.artist.name}"
+        return f"{self.user} | {self.condition} | {self.release.name} | {self.release.artist.name}"
 
 
 class Tag(models.Model):

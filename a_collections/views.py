@@ -15,7 +15,7 @@ import shutil
 from django.http import HttpResponse
 
 from a_collections.utils import artist_search, release_search
-from a_collections.models import Artist, Release, Cover_Art, Record_Label, Collection
+from a_collections.models import Artist, Release, Cover_Art, Record_Label, Collection, Track
 from a_collections.forms import ReleaseCreateForm, ReleaseEditForm, ArtistCreateForm, ArtistEditForm
 
 # Create your views here.
@@ -288,9 +288,20 @@ def collection_page_view(request, pk):
     collection = get_object_or_404(Collection, id=pk)
     cover_art_images = collection.release.cover_art.all()
     
+    release = Release.objects.get(id=collection.release.id)
+    print(f"release: {release}")
+
+    # Get all tracks associated with the release
+    tracks = release.tracks.all()
+    print(f"tracks: {tracks}")
+
+    # Iterate over the tracks
+    for track in tracks:
+        print(track.title)
+
     context = {
-        'collection': collection,
-        'cover_art_images': cover_art_images,
+    'collection': collection,
+    'cover_art_images': cover_art_images,
     }
     return render(request, "a_collections/collection_detail.html", context)
 
@@ -651,6 +662,48 @@ def add_artist_view(request):
         else: 
             if release:
                 messages.success(request, f'Release {release} already in the database')  
+
+        # add tracks
+        # Construct the URL for the MusicBrainz API endpoint for releases
+        url = f"https://musicbrainz.org/ws/2/release/{release_id}?inc=recordings&fmt=json"
+        print(f"url: {url}")
+        print(f"release id: {release_id}")
+        # Make a GET request to the MusicBrainz API
+        response = requests.get(url)
+        print(f"response: {response}")
+        # Check if the request was successful
+        if response.status_code == 200:
+            # Parse the JSON response
+            data = response.json()
+
+            # Extract the list of recordings (tracks) from the response
+            tracks = data.get('media', [{}])[0].get('tracks', [])
+            print(f"tracks on this release: ")
+            print(f"{tracks}")
+          
+            for track in tracks:
+                musicbrainz_id = track.get('id', None)
+                length = track.get('length', None)
+                number = track.get('number', None)
+                title = track.get('title', None)
+                print(f"track title: {title}")
+                print(f"musicbrainz id: {musicbrainz_id}")
+                print(f"length/duration of song: {length}")
+                print(f"number on release: {number}")
+                
+                #TODO: check of track er als is:
+
+                track = Track.objects.create(
+                    musicbrainz_id = musicbrainz_id,
+                    release = release,
+                    title = title,
+                    position = number,
+                    duration = length,
+                )
+        else:
+            # If the request fails, print an error message
+            print(f"Failed to fetch tracks from release {release_id}. Status code: {response.status_code}")
+        
 
         return redirect('collection-list')  
     return redirect('collection-list')
