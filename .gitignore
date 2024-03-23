@@ -73,6 +73,9 @@ coverage.xml
 *.mo
 *.pot
 
+# mediafiles
+mediafiles/
+
 # Sphinx documentation
 docs/_build/
 
