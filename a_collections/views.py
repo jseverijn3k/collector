@@ -14,7 +14,7 @@ import requests
 import shutil
 from django.http import HttpResponse
 
-from a_collections.utils import artist_search, release_search
+from a_collections.utils import artist_search, release_search, milliseconds_to_minutes_seconds
 from a_collections.models import Artist, Release, Cover_Art, Record_Label, Collection, Track
 from a_collections.forms import ReleaseCreateForm, ReleaseEditForm, ArtistCreateForm, ArtistEditForm
 
@@ -36,15 +36,15 @@ def home_view(request, tag=None):
     # except:
     #     return HttpResponse('')
 
-    artist_search("Texas")
+    # artist_search("Texas")
 
-    quote = 'Record collecting is the hobby of collecting sound recordings, usually of music, but sometimes poetry, reading, historical speeches, and ambient noises. Although the typical focus is on vinyl records, all formats of recorded music can be collected.'
+    # quote = 'Record collecting is the hobby of collecting sound recordings, usually of music, but sometimes poetry, reading, historical speeches, and ambient noises. Although the typical focus is on vinyl records, all formats of recorded music can be collected.'
     context = {
         'tag' : tag,
         # 'page' : page,
-        'artists' : Artist.objects.all(),
-        'albums' : Release.objects.all(),
-        'quote' :  quote,
+        # 'artists' : Artist.objects.all(),
+        # 'albums' : Release.objects.all(),
+        # 'quote' :  quote,
     }
     
     # if request.htmx:
@@ -227,7 +227,8 @@ def release_edit_view(request, pk):
 def get_cover_art_urls(release_id):
     # Construct the URL for the cover art images using the release ID
     cover_art_url = f"https://coverartarchive.org/release/{release_id}"
-    print(f"cover art url: {cover_art_url}")
+    # print(f"cover art url: {cover_art_url}")
+    
     # Send GET request to the cover art archive
     response = requests.get(cover_art_url)
 
@@ -236,40 +237,6 @@ def get_cover_art_urls(release_id):
         return response.json()  # Return the JSON data
     else:
         return None
-
-# def get_cover_art_urls(release_id):
-#     # Construct the URL for the cover art images using the release ID
-#     cover_art_url = f"https://coverartarchive.org/release/{release_id}"
-#     print(f"cover art url: {cover_art_url}")
-    
-#     # Send GET request to the cover art archive
-#     response = requests.get(cover_art_url)
-
-#     # Check if request was successful and cover art exists
-#     if response.status_code == 200:
-#         # Parse JSON data
-#         json_data = response.json()
-
-#         # Download cover art image
-#         image_url = json_data.get('images', [{}])[0].get('image', '')
-#         if image_url:
-#             image_response = requests.get(image_url, stream=True)
-#             print(f"Image response: {image_response.status_code} | {image_response}")
-
-#             if image_response.status_code == 200:
-#                 # Save image to hard drive
-#                 file_path = f"cover_art_{release_id}.jpg"
-#                 with open(file_path, 'wb') as f:
-#                     image_response.raw.decode_content = True
-#                     shutil.copyfileobj(image_response.raw, f)
-
-#                 print(f"Image file path: {file_path}")
-#                 # Add file URL to JSON data
-#                 json_data['file_url'] = file_path
-
-#         return json_data  # Return the JSON data along with file URL
-#     else:
-#         return None
 
 
 def release_page_view(request, pk):
@@ -293,15 +260,17 @@ def collection_page_view(request, pk):
 
     # Get all tracks associated with the release
     tracks = release.tracks.all()
-    print(f"tracks: {tracks}")
 
-    # Iterate over the tracks
+     # Convert track durations from milliseconds to minutes and seconds
     for track in tracks:
-        print(track.title)
+        track.duration_formatted = milliseconds_to_minutes_seconds(int(track.duration))
+
+    print(f"tracks: {tracks}")
 
     context = {
     'collection': collection,
     'cover_art_images': cover_art_images,
+    'tracks': tracks,
     }
     return render(request, "a_collections/collection_detail.html", context)
 
@@ -381,14 +350,13 @@ def search_release(request):
                     image_type = image_data.get('types', [])
 
                     if image_type and image_type[0] == "Front":
-                        print(f"id: {image_id} | image: {image_url} | type: {image_type[0]} | thumbnails_small: {thumbnails_small}")
+                        # print(f"id: {image_id} | image: {image_url} | type: {image_type[0]} | thumbnails_small: {thumbnails_small}")
                         cover_art_images.append({
                             'id': image_id,
                             'image': image_url,
                             'image_small': thumbnails_small,
                             'type': image_type[0]
                         })
-                        # cover_art_images.append({'id': image_id, 'image': image_url, 'image_small': thumbnails_small, 'type': image_type})
                         
             else:
                 cover_art_images = []
@@ -413,30 +381,30 @@ def search_release(request):
                 format= 'DVD'
 
             # Print the information
-            print("Release_id:", release_id)
-            print("Name:", name)
-            print("Artist_id:", artist_id)
+            # print("Release_id:", release_id)
+            # print("Name:", name)
+            # print("Artist_id:", artist_id)
 
-            print("Artist:", artist)
-            print("Format:", format)
+            # print("Artist:", artist)
+            # print("Format:", format)
 
-            if cd_tracks > 0 and dvd_tracks == 0:
-                print(f"Tracks: {cd_tracks}")
-            elif cd_tracks > 0 and dvd_tracks >0:
-                print(f"Tracks: {cd_tracks} + {dvd_tracks}")
-            elif cd_tracks == 0 and dvd_tracks >0:
-                print(f"Tracks: {dvd_tracks}")
+            # if cd_tracks > 0 and dvd_tracks == 0:
+            #     print(f"Tracks: {cd_tracks}")
+            # elif cd_tracks > 0 and dvd_tracks >0:
+            #     print(f"Tracks: {cd_tracks} + {dvd_tracks}")
+            # elif cd_tracks == 0 and dvd_tracks >0:
+            #     print(f"Tracks: {dvd_tracks}")
 
-            print("Country/Date:", country_date)
-            print("Label:", label)
-            print("Label_id:", label_id)
+            # print("Country/Date:", country_date)
+            # print("Label:", label)
+            # print("Label_id:", label_id)
 
-            print("Catalog#:", catalog_number)
-            print("Barcode:", barcode)
-            print("Language:", language)
-            print("Release_type:", release_type)
-            print("Status:", status)
-            print()
+            # print("Catalog#:", catalog_number)
+            # print("Barcode:", barcode)
+            # print("Language:", language)
+            # print("Release_type:", release_type)
+            # print("Status:", status)
+            # print()
 
             result_info = {
                 # album info
@@ -685,11 +653,13 @@ def add_artist_view(request):
                 musicbrainz_id = track.get('id', None)
                 length = track.get('length', None)
                 number = track.get('number', None)
+                position = track.get('position', None)
                 title = track.get('title', None)
                 print(f"track title: {title}")
                 print(f"musicbrainz id: {musicbrainz_id}")
                 print(f"length/duration of song: {length}")
                 print(f"number on release: {number}")
+                print(f"position on release: {position}")
                 
                 #TODO: check of track er als is:
 
@@ -697,8 +667,9 @@ def add_artist_view(request):
                     musicbrainz_id = musicbrainz_id,
                     release = release,
                     title = title,
-                    position = number,
+                    position = position,
                     duration = length,
+                    number = number,
                 )
         else:
             # If the request fails, print an error message
@@ -828,3 +799,43 @@ def download_csv(request):
             writer.writerow([obj2.name, obj1.name, obj1.type, obj1.release_year, obj1.catalog_number, obj1.record_label])
 
     return response
+
+
+def recognize_song(request):
+    print(f"request: {request}")
+    if request.method == 'POST':
+
+        # Assume you have obtained the audio sample from the user's microphone
+        audio_sample = request.FILES.get('audio_data')  # Get the uploaded audio file
+
+        # Construct the request payload with the audio sample
+        payload = {
+            'audio': audio_sample,
+            # Add other necessary parameters, such as API key, etc.
+        }
+
+        # Make a POST request to Shazam's API endpoint for recognition
+        response = requests.post('https://api.shazam.com/songs/recognize', data=payload)
+        print(f"response: {response}")
+        # Check if the request was successful
+        if response.status_code == 200:
+            # Parse the response JSON to extract song metadata
+            song_data = response.json()
+            song_title = song_data['title']
+            artist_name = song_data['artist']
+
+            print(f"song_data: {song_data}")
+            # Extract other relevant song metadata
+
+            # Return the recognized song information as a response
+            context = {
+                'title': song_title,
+                'artist': artist_name,
+                # Include other song metadata as needed
+            }
+        else:
+            # Handle the case where recognition failed
+            print(f"(error: 'Recognition failed', status=500")
+    
+    context = {}
+    return render(request, 'a_collections/shazam.html', context)

@@ -1,6 +1,9 @@
 {% extends 'layouts/b.html' %}
 
 {% block content %}
+<!-- Back button -->
+<button onclick="goBack()">Back</button><br></br>
+
 <div class="cover-art-container">
     {% if cover_art_images %}
         {% with first_cover_art=cover_art_images.first %}
@@ -21,6 +24,32 @@
 <p>Format: {{ collection.release.format }}</p>
 <p>Status: {{ collection.release.status }}</p>
 <p>Tracks: {{ collection.release.cd_tracks }} {% if collection.release.dvd_tracks > 0 %} CD + {{ collection.release.dvd_tracks }} DVD{% endif %}</p>
+
+<h2>Tracks</h2>
+<table>
+    <thead>
+      <tr>
+        <th class="hidden-mobile">Pos</th>
+        <th class="hidden-mobile">Num</th>
+        <th class="hidden-mobile">Title</th>
+        <th class="hidden-mobile">Duration</th>
+      </tr>
+    </thead>
+
+    <tbody>
+        {% for track in tracks %}
+        <tr>
+            <td>{{ track.position }}</td>
+            <td>{{ track.number }}</td>
+            <td>{{ track.title }}</td>
+            <td>{{ track.duration_formatted }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% comment %} {% for track in tracks %}
+    {{track.position}} | {{track.title}} | {{track.duration}}
+{% endfor %} {% endcomment %}
 
 
 <!-- Back button -->

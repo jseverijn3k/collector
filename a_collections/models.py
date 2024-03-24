@@ -71,6 +71,7 @@ class Track(models.Model):
     musicbrainz_id = models.CharField(unique=True, blank=True, null=True, max_length=255)
     release = models.ForeignKey(Release, on_delete=models.CASCADE, related_name='tracks')
     title = models.CharField(max_length=255)
+    number = models.CharField(max_length=255)
     position = models.IntegerField()
     duration = models.CharField(max_length=20, null=True, blank=True)
 

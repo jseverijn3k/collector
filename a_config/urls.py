@@ -57,6 +57,11 @@ urlpatterns = [
     path('add_artist/', add_artist_view, name='add_artist'),
     path('search_release/', search_release, name='search_release'),
 
+    #TODO: shazam
+    path('shazam/', recognize_song, name='shazam'),
+    
+
+
     #TODO: barcode scanner
     path('barcode_scanner/', barcode_scanner, name='barcode_scanner'),
     path('scan_barcode/', scan_barcode, name='scan_barcode'),

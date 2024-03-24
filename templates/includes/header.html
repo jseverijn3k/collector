@@ -25,10 +25,12 @@
                 {% comment %} <li><a href="{% url 'download-csv' %}">CSV</a></li> {% endcomment %}
                 {% comment %} <li><a href="{% url 'release-list' %}">Release List</a></li> {% endcomment %}
                 <li><a href="{% url 'collection-list' %}">My collection</a></li>
+
                 {% comment %} <li><a href="{% url 'artist-create' %}">Create Artist</a></li> {% endcomment %}
                 <li><a href="{% url 'release-create' %}">Add to Collection</a></li>
                 <li><a href="{% url 'barcode_scanner' %}">Barcode Scanner</a></li>
-                
+                <li><a href="{% url 'shazam' %}">Shazam</a></li>
+
                 {% comment %} <li><a href="{% url 'inbox' %}">Inbox</a></li>  {% endcomment %}
                 <li x-data="{ dropdownOpen: false }" class="relative">
                     <a @click="dropdownOpen = !dropdownOpen" @click.away="dropdownOpen = false" class="cursor-pointer select-none">

@@ -1,0 +1,465 @@
+{
+    "artists": [
+        [
+            {
+                "id": "179cab91-14da-492b-a8a0-44ea497c1288",
+                "musicbrainz_id": "60c5c7a0-95e1-493d-ba2e-3d548b5947f0",
+                "name": "Acda en De Munnik",
+                "type": "",
+                "ext_score": 100,
+                "created": "2024-03-24T10:46:22.473Z"
+            },
+            {
+                "id": "5d60d4ba-1935-4d53-9f48-bf60248056c4",
+                "musicbrainz_id": "70248960-cb53-4ea4-943a-edb18f7d336f",
+                "name": "Bruce Springsteen",
+                "type": "",
+                "ext_score": 100,
+                "created": "2024-03-24T10:46:47.589Z"
+            }
+        ]
+    ],
+    "record_labels": [
+        [
+            {
+                "id": "122ed8b1-7912-41ee-beb0-898a9d29d698",
+                "name": "Sony Music",
+                "musicbrainz_id": "9e6b4d7f-4958-4db7-8504-d89e315836af"
+            },
+            {
+                "id": "bf32c421-f032-4d2b-b747-6c92a23ba22a",
+                "name": "Columbia",
+                "musicbrainz_id": "011d1192-6f65-45bd-85c4-0400dd45693e"
+            },
+            {
+                "id": "b9fc28b0-6bd7-43ab-a00e-0b53fd6474bf",
+                "name": "CBS",
+                "musicbrainz_id": "b8d33bec-92cc-40d9-bd92-4eb089b401a9"
+            }
+        ]
+    ],
+    "releases": [
+        [
+            {
+                "id": "1e3855eb-3ef6-4c0e-9e2d-832694bc276f",
+                "musicbrainz_id": "fedb807e-8f90-4993-bef2-7e936d1feb02",
+                "name": "Greatest Hits",
+                "type": 1,
+                "catalog_number": "C2 67060",
+                "barcode": "074646706015",
+                "language": "eng",
+                "status": "Official",
+                "date": "US 1995",
+                "format": "12\" Vinyl",
+                "cd_tracks": 0,
+                "dvd_tracks": 0,
+                "record_label": "bf32c421-f032-4d2b-b747-6c92a23ba22a",
+                "release_year": null,
+                "artist": "5d60d4ba-1935-4d53-9f48-bf60248056c4"
+            },
+            {
+                "id": "22a99959-0bb3-43ff-9079-20101494a2ae",
+                "musicbrainz_id": "8b9d1b9c-a4bb-4a81-8a6a-03d4407c5299",
+                "name": "Groeten uit Maaiveld",
+                "type": 1,
+                "catalog_number": "SML 509800 2",
+                "barcode": "5099750980026",
+                "language": "nld",
+                "status": "Official",
+                "date": "NL 2002-11-19",
+                "format": "CD",
+                "cd_tracks": 13,
+                "dvd_tracks": 0,
+                "record_label": "122ed8b1-7912-41ee-beb0-898a9d29d698",
+                "release_year": null,
+                "artist": "179cab91-14da-492b-a8a0-44ea497c1288"
+            },
+            {
+                "id": "6a85e555-8286-4eb3-a99d-58dcdf24b79a",
+                "musicbrainz_id": "b11276a5-f052-474f-997e-11c8d0de9d0d",
+                "name": "The River",
+                "type": 1,
+                "catalog_number": "CBS 88510",
+                "barcode": "",
+                "language": "eng",
+                "status": "Official",
+                "date": "GR ",
+                "format": "12\" Vinyl",
+                "cd_tracks": 0,
+                "dvd_tracks": 0,
+                "record_label": "b9fc28b0-6bd7-43ab-a00e-0b53fd6474bf",
+                "release_year": null,
+                "artist": "5d60d4ba-1935-4d53-9f48-bf60248056c4"
+            }
+        ]
+    ],
+    "tracks": [
+        [
+            {
+                "id": 14,
+                "musicbrainz_id": "f4958d8a-3c95-3ce0-bd09-cda0d0843b66",
+                "release": "1e3855eb-3ef6-4c0e-9e2d-832694bc276f",
+                "title": "Born to Run",
+                "number": "",
+                "position": 1,
+                "duration": "270000"
+            },
+            {
+                "id": 15,
+                "musicbrainz_id": "228e4ddd-4543-3d37-87d6-76722f3d4067",
+                "release": "1e3855eb-3ef6-4c0e-9e2d-832694bc276f",
+                "title": "Thunder Road",
+                "number": "",
+                "position": 2,
+                "duration": "288000"
+            },
+            {
+                "id": 16,
+                "musicbrainz_id": "56adb20a-fb22-3bf9-9638-369b3b21dd01",
+                "release": "1e3855eb-3ef6-4c0e-9e2d-832694bc276f",
+                "title": "Badlands",
+                "number": "",
+                "position": 3,
+                "duration": "242000"
+            },
+            {
+                "id": 17,
+                "musicbrainz_id": "b64e58ba-34b4-3f4a-bdd1-cb25b35e0e65",
+                "release": "1e3855eb-3ef6-4c0e-9e2d-832694bc276f",
+                "title": "The River",
+                "number": "",
+                "position": 4,
+                "duration": "300000"
+            },
+            {
+                "id": 18,
+                "musicbrainz_id": "a842907a-daf1-341e-8e7b-d11bbff7f537",
+                "release": "1e3855eb-3ef6-4c0e-9e2d-832694bc276f",
+                "title": "Hungry Heart",
+                "number": "",
+                "position": 5,
+                "duration": "200000"
+            },
+            {
+                "id": 19,
+                "musicbrainz_id": "26dd1db6-ac38-3312-a0af-330782be0a2f",
+                "release": "1e3855eb-3ef6-4c0e-9e2d-832694bc276f",
+                "title": "Atlantic City",
+                "number": "",
+                "position": 6,
+                "duration": "236000"
+            },
+            {
+                "id": 20,
+                "musicbrainz_id": "83902e5d-004d-3304-a78b-c3c277ea1e6a",
+                "release": "1e3855eb-3ef6-4c0e-9e2d-832694bc276f",
+                "title": "Dancing in the Dark",
+                "number": "",
+                "position": 7,
+                "duration": "243000"
+            },
+            {
+                "id": 21,
+                "musicbrainz_id": "1c626fc8-502f-3741-bd1b-ac29a339122e",
+                "release": "1e3855eb-3ef6-4c0e-9e2d-832694bc276f",
+                "title": "Born in the U.S.A.",
+                "number": "",
+                "position": 8,
+                "duration": "281000"
+            },
+            {
+                "id": 22,
+                "musicbrainz_id": "8e1b50e8-6c86-319f-99b8-9a886969c719",
+                "release": "1e3855eb-3ef6-4c0e-9e2d-832694bc276f",
+                "title": "My Hometown",
+                "number": "",
+                "position": 9,
+                "duration": "252000"
+            },
+            {
+                "id": 1,
+                "musicbrainz_id": "5a1044fe-404a-349d-babf-9bb82a155e44",
+                "release": "22a99959-0bb3-43ff-9079-20101494a2ae",
+                "title": "Groeten uit Maaiveld",
+                "number": "",
+                "position": 1,
+                "duration": "242146"
+            },
+            {
+                "id": 2,
+                "musicbrainz_id": "ba53ca58-c526-35db-bac0-5129670ce047",
+                "release": "22a99959-0bb3-43ff-9079-20101494a2ae",
+                "title": "Zo is het goed",
+                "number": "",
+                "position": 2,
+                "duration": "200240"
+            },
+            {
+                "id": 3,
+                "musicbrainz_id": "b76ee14b-3b5c-3cd9-9e45-2b8e42be1759",
+                "release": "22a99959-0bb3-43ff-9079-20101494a2ae",
+                "title": "Ren Lenny, ren",
+                "number": "",
+                "position": 3,
+                "duration": "233440"
+            },
+            {
+                "id": 4,
+                "musicbrainz_id": "edaef1b0-d6bf-3930-9687-98a6a216aa7c",
+                "release": "22a99959-0bb3-43ff-9079-20101494a2ae",
+                "title": "Hoogmoed en de val",
+                "number": "",
+                "position": 4,
+                "duration": "276746"
+            },
+            {
+                "id": 5,
+                "musicbrainz_id": "7ffd703f-0e75-3751-ae8e-827e24b3e5b8",
+                "release": "22a99959-0bb3-43ff-9079-20101494a2ae",
+                "title": "Tijd (Zonder titel)",
+                "number": "",
+                "position": 5,
+                "duration": "223360"
+            },
+            {
+                "id": 6,
+                "musicbrainz_id": "44fdb61e-3cfb-367c-a49e-8fa0110faa1b",
+                "release": "22a99959-0bb3-43ff-9079-20101494a2ae",
+                "title": "Welkom terug",
+                "number": "",
+                "position": 6,
+                "duration": "137013"
+            },
+            {
+                "id": 7,
+                "musicbrainz_id": "b84a1559-3973-3dc2-951a-f467d60d8d47",
+                "release": "22a99959-0bb3-43ff-9079-20101494a2ae",
+                "title": "Het woord is aan",
+                "number": "",
+                "position": 7,
+                "duration": "264040"
+            },
+            {
+                "id": 8,
+                "musicbrainz_id": "f9062675-3d1a-3bef-acf1-6ef9855879bf",
+                "release": "22a99959-0bb3-43ff-9079-20101494a2ae",
+                "title": "Ik hou van jou",
+                "number": "",
+                "position": 8,
+                "duration": "187186"
+            },
+            {
+                "id": 9,
+                "musicbrainz_id": "300ab8f5-b44d-3cc1-9bb6-352eebcdfa8c",
+                "release": "22a99959-0bb3-43ff-9079-20101494a2ae",
+                "title": "Ik was vergeten",
+                "number": "",
+                "position": 9,
+                "duration": "217546"
+            },
+            {
+                "id": 10,
+                "musicbrainz_id": "ba7a08f3-8c9f-3f0e-9f9f-bf59fc6fa7c1",
+                "release": "22a99959-0bb3-43ff-9079-20101494a2ae",
+                "title": "Mis ik mij",
+                "number": "",
+                "position": 10,
+                "duration": "190813"
+            },
+            {
+                "id": 11,
+                "musicbrainz_id": "f4107bb1-9c41-3629-af06-398a438815c3",
+                "release": "22a99959-0bb3-43ff-9079-20101494a2ae",
+                "title": "Slaapliedje",
+                "number": "",
+                "position": 11,
+                "duration": "256066"
+            },
+            {
+                "id": 12,
+                "musicbrainz_id": "439bd17e-c0ff-32af-94bf-4faffbcb3874",
+                "release": "22a99959-0bb3-43ff-9079-20101494a2ae",
+                "title": "Heel soms",
+                "number": "",
+                "position": 12,
+                "duration": "237880"
+            },
+            {
+                "id": 13,
+                "musicbrainz_id": "5a62af24-230b-3346-bb86-db814b156bd6",
+                "release": "22a99959-0bb3-43ff-9079-20101494a2ae",
+                "title": "[untitled]",
+                "number": "",
+                "position": 13,
+                "duration": "175093"
+            },
+            {
+                "id": 23,
+                "musicbrainz_id": "951cccac-dc52-4a06-a2a0-da99a91030b5",
+                "release": "6a85e555-8286-4eb3-a99d-58dcdf24b79a",
+                "title": "The Ties That Bind",
+                "number": "A1",
+                "position": 1,
+                "duration": "214360"
+            },
+            {
+                "id": 24,
+                "musicbrainz_id": "022b05e1-fcca-4e47-b8ff-0523679f3a1e",
+                "release": "6a85e555-8286-4eb3-a99d-58dcdf24b79a",
+                "title": "Sherry Darling",
+                "number": "A2",
+                "position": 2,
+                "duration": "243200"
+            },
+            {
+                "id": 25,
+                "musicbrainz_id": "d8ed1866-006b-412f-94e4-d55b47e15b46",
+                "release": "6a85e555-8286-4eb3-a99d-58dcdf24b79a",
+                "title": "Jackson Cage",
+                "number": "A3",
+                "position": 3,
+                "duration": "184733"
+            },
+            {
+                "id": 26,
+                "musicbrainz_id": "15d8dd70-ac9c-4a65-9374-37f44a75549d",
+                "release": "6a85e555-8286-4eb3-a99d-58dcdf24b79a",
+                "title": "Two Hearts",
+                "number": "A4",
+                "position": 4,
+                "duration": "165573"
+            },
+            {
+                "id": 27,
+                "musicbrainz_id": "e94a30bf-1da6-4be4-acc6-f170bb84bf8b",
+                "release": "6a85e555-8286-4eb3-a99d-58dcdf24b79a",
+                "title": "Independence Day",
+                "number": "A5",
+                "position": 5,
+                "duration": "290600"
+            },
+            {
+                "id": 28,
+                "musicbrainz_id": "ea769f3d-1fc7-48e8-818d-4a80dd053c78",
+                "release": "6a85e555-8286-4eb3-a99d-58dcdf24b79a",
+                "title": "Hungry Heart",
+                "number": "B1",
+                "position": 6,
+                "duration": "199600"
+            },
+            {
+                "id": 29,
+                "musicbrainz_id": "0d1840d6-a828-4ff7-b2d0-0b3329326cca",
+                "release": "6a85e555-8286-4eb3-a99d-58dcdf24b79a",
+                "title": "Out in the Street",
+                "number": "B2",
+                "position": 7,
+                "duration": "258093"
+            },
+            {
+                "id": 30,
+                "musicbrainz_id": "93367cf6-695d-4f03-9a95-3893920a5827",
+                "release": "6a85e555-8286-4eb3-a99d-58dcdf24b79a",
+                "title": "Crush on You",
+                "number": "B3",
+                "position": 8,
+                "duration": "190773"
+            },
+            {
+                "id": 31,
+                "musicbrainz_id": "bf30bead-f286-4edb-bc59-5496a56f15bf",
+                "release": "6a85e555-8286-4eb3-a99d-58dcdf24b79a",
+                "title": "You Can Look (but You Better Not Touch)",
+                "number": "B4",
+                "position": 9,
+                "duration": "157600"
+            },
+            {
+                "id": 32,
+                "musicbrainz_id": "64f47221-5e29-4b92-8c55-c6b3fdc3a3b8",
+                "release": "6a85e555-8286-4eb3-a99d-58dcdf24b79a",
+                "title": "I Wanna Marry You",
+                "number": "B5",
+                "position": 10,
+                "duration": "210800"
+            },
+            {
+                "id": 33,
+                "musicbrainz_id": "8f95888a-81bc-42c7-8ece-38b4693a74eb",
+                "release": "6a85e555-8286-4eb3-a99d-58dcdf24b79a",
+                "title": "The River",
+                "number": "B6",
+                "position": 11,
+                "duration": "301333"
+            }
+        ]
+    ],
+    "cover_art": [
+        [
+            {
+                "id": "cde2a5fc-6205-4523-ae2c-5dd1b9b03a06",
+                "musicbrainz_id": "9778794857",
+                "release": "22a99959-0bb3-43ff-9079-20101494a2ae",
+                "image": "/mediafiles/cover_art/cover_art_8b9d1b9c-a4bb-4a81-8a6a-03d4407c5299.jpg",
+                "image_url": "http://coverartarchive.org/release/8b9d1b9c-a4bb-4a81-8a6a-03d4407c5299/9778794857.jpg",
+                "image_small_url": "http://coverartarchive.org/release/8b9d1b9c-a4bb-4a81-8a6a-03d4407c5299/9778794857-250.jpg",
+                "cover_art_type": "Front"
+            },
+            {
+                "id": "91f64382-7ddd-4ac9-baf7-411e8ff06db1",
+                "musicbrainz_id": "11681392088",
+                "release": "1e3855eb-3ef6-4c0e-9e2d-832694bc276f",
+                "image": "/mediafiles/cover_art/cover_art_fedb807e-8f90-4993-bef2-7e936d1feb02.jpg",
+                "image_url": "http://coverartarchive.org/release/fedb807e-8f90-4993-bef2-7e936d1feb02/11681392088.jpg",
+                "image_small_url": "http://coverartarchive.org/release/fedb807e-8f90-4993-bef2-7e936d1feb02/11681392088-250.jpg",
+                "cover_art_type": "Front"
+            },
+            {
+                "id": "7cad7282-819a-4fca-b93e-1708fe1a05e7",
+                "musicbrainz_id": "24540925423",
+                "release": "6a85e555-8286-4eb3-a99d-58dcdf24b79a",
+                "image": "/mediafiles/cover_art/cover_art_b11276a5-f052-474f-997e-11c8d0de9d0d.jpg",
+                "image_url": "http://coverartarchive.org/release/b11276a5-f052-474f-997e-11c8d0de9d0d/24540925423.jpg",
+                "image_small_url": "http://coverartarchive.org/release/b11276a5-f052-474f-997e-11c8d0de9d0d/24540925423-250.jpg",
+                "cover_art_type": "Front"
+            }
+        ]
+    ],
+    "collections": [
+        [
+            {
+                "id": "57f82a0f-5729-467d-9e7c-08fcc662a8ac",
+                "user": 1,
+                "release": "22a99959-0bb3-43ff-9079-20101494a2ae",
+                "condition": 1,
+                "date_added": null,
+                "description": "",
+                "purchase_date": null,
+                "purchase_price": null
+            },
+            {
+                "id": "a194b48c-e4a2-4244-b996-6f4b784bab2d",
+                "user": 1,
+                "release": "1e3855eb-3ef6-4c0e-9e2d-832694bc276f",
+                "condition": 1,
+                "date_added": null,
+                "description": "",
+                "purchase_date": null,
+                "purchase_price": null
+            },
+            {
+                "id": "89e5351c-a7e6-4d44-88c1-ed59052c19d8",
+                "user": 1,
+                "release": "6a85e555-8286-4eb3-a99d-58dcdf24b79a",
+                "condition": 1,
+                "date_added": null,
+                "description": "",
+                "purchase_date": null,
+                "purchase_price": null
+            }
+        ]
+    ],
+    "tags": [
+        []
+    ]
+}

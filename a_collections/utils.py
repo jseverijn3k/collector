@@ -22,3 +22,15 @@ def release_search(artist, album):
     # "release-list", which is a list of dictionaries.
     print(result)
     return result
+
+
+def milliseconds_to_minutes_seconds(milliseconds):
+    total_seconds = milliseconds // 1000
+    minutes = total_seconds // 60
+    seconds = total_seconds % 60
+    return f"{minutes}:{seconds:02d}"  # Format seconds with leading zero if necessary
+
+    # # Example usage:
+    # duration_milliseconds = 185693
+    # duration_formatted = milliseconds_to_minutes_seconds(duration_milliseconds)
+    # print(duration_formatted)  # Output: 3:05

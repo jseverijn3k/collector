@@ -167,7 +167,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # STATIC_ROOT = BASE_DIR.parent / "local-cdn" / "static"
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-MEDIA_URL = 'media/'
+MEDIA_URL = '/mediafiles/'
 MEDIA_ROOT = BASE_DIR / 'mediafiles'
 # MEDIA_ROOT = BASE_DIR / 'media'
 

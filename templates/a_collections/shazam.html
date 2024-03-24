@@ -1,0 +1,74 @@
+{% extends 'layouts/b.html' %}
+
+{% block content %}
+<h1> Shazam </h1>   
+<form>
+    {% csrf_token %}
+    <button hx-post="{% url 'shazam' %}" hx-swap="innerHTML" hx-trigger="click">
+        Capture Audio
+    </button>
+</form>
+
+<script>
+    document.querySelector('button').addEventListener('click', async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const recorder = new MediaRecorder(stream);
+            
+            const audioChunks = [];
+            recorder.addEventListener('dataavailable', event => {
+                audioChunks.push(event.data);
+            });
+            
+            recorder.addEventListener('stop', async () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                const formData = new FormData();
+                formData.append('audio_data', audioBlob);
+                
+                try {
+                    // Get the CSRF token from the cookie
+                    const csrftoken = getCookie('csrftoken');
+    
+                    const response = await fetch('{% url "shazam" %}', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': csrftoken  // Set the CSRF token in the request header
+                        },
+                        body: formData
+                    });
+                    
+                    if (response.ok) {
+                        const result = await response.json();
+                        console.log(result);
+                    } else {
+                        console.error('Recognition failed:', response.statusText);
+                    }
+                } catch (error) {
+                    console.error('Error recognizing song:', error);
+                }
+            });
+    
+            recorder.start();
+            setTimeout(() => recorder.stop(), 5000); // Stop recording after 5 seconds (adjust as needed)
+        } catch (error) {
+            console.error('Error capturing audio:', error);
+        }
+    });
+    
+    // Function to get the CSRF token from the cookie
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    </script>
+{% endblock  %}
