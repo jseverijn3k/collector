@@ -19,15 +19,15 @@ class ProfileForm(ModelForm):
             'image' : forms.FileInput(),
             'bio' : forms.Textarea(attrs={'rows':3}),
         }
-        # help_texts = {
-        #     'image': 'Upload a profile image',
-        #     'realname': 'Enter your real name',
-        #     'email': 'Enter your email',
-        #     'location': 'Enter your location',
-        #     'bio': 'Enter a short bio',
-        # }
-        # error_messages = {
-        #     'image': {
-        #         'max_length': 'This image name is too long.',
-        #     },
-        # }
+        help_texts = {
+            'image': 'Upload a profile image',
+            'realname': 'Enter your real name',
+            'email': 'Enter your email',
+            'location': 'Enter your location',
+            'bio': 'Enter a short bio',
+        }
+        error_messages = {
+            'image': {
+                'max_length': 'This image name is too long.',
+            },
+        }

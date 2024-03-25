@@ -563,8 +563,12 @@ def add_artist_view(request):
                 
                 for data in cover_art_images:
                     musicbrainz_id = data.get('id'),
-                    cover_art = Cover_Art.objects.filter( musicbrainz_id = musicbrainz_id).first()
-                    # print(f"covert art: {cover_art}")
+                    print(f"covert musicbrainz_id: {musicbrainz_id}")
+                    print(f"covert musicbrainz_id: {type(musicbrainz_id)}")
+                    print(f"covert musicbrainz_id: {musicbrainz_id[0]}")
+
+                    cover_art = Cover_Art.objects.filter( musicbrainz_id = musicbrainz_id[0]).first()
+                    print(f"covert art: {cover_art}")
 
                     if not cover_art:
 
@@ -661,16 +665,20 @@ def add_artist_view(request):
                 print(f"number on release: {number}")
                 print(f"position on release: {position}")
                 
-                #TODO: check of track er als is:
+                track_found = Track.objects.filter(musicbrainz_id = musicbrainz_id).first()
+                print(f"track found in database: {track}")
 
-                track = Track.objects.create(
-                    musicbrainz_id = musicbrainz_id,
-                    release = release,
-                    title = title,
-                    position = position,
-                    duration = length,
-                    number = number,
-                )
+                if not track_found:
+                    #TODO: check of track er als is:
+
+                    track = Track.objects.create(
+                        musicbrainz_id = musicbrainz_id,
+                        release = release,
+                        title = title,
+                        position = position,
+                        duration = length,
+                        number = number,
+                    )
         else:
             # If the request fails, print an error message
             print(f"Failed to fetch tracks from release {release_id}. Status code: {response.status_code}")
