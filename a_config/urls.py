@@ -57,6 +57,9 @@ urlpatterns = [
     path('add_artist/', add_artist_view, name='add_artist'),
     path('search_release/', search_release, name='search_release'),
 
+    #TODO: artist overview
+    path('artist_album/', artist_albums, name='artist_albums'),
+
     #TODO: shazam
     path('shazam/', recognize_song, name='shazam'),
     

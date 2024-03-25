@@ -33,12 +33,12 @@
             <td>{{ result.format }}</td>
             <td class="hidden-mobile">{{ result.cd_tracks }} {% if result.dvd_tracks > 0 %} + {{ result.dvd_tracks }} {% endif %}</td>
             <td class="hidden-mobile">{{ result.date }}</td>
-            <td>{{ result.record_label }}</td>
+            <td>{{ result.label }}</td>
             <td>{{ result.catalog_number }}</td>
             <td>{{ result.barcode }}</td>
             <td>{{ result.language }}</td>
             <td class="hidden-mobile">{{ result.language }}</td>
-            <td class="hidden-mobile">{{ result.type }}</td>
+            <td class="hidden-mobile">{{ result.release_type }}</td>
             <td class="hidden-mobile">{{ result.status }}</td>
             <td>
               <form method="post" action="{% url 'add_artist' %}">

@@ -891,3 +891,61 @@ def recognize_song(request):
     
     context = {}
     return render(request, 'a_collections/shazam.html', context)
+
+
+""" Function to get al albums from a given artist 
+    input: musicbrainz artist_id
+    output: list of albums from the artis
+
+"""
+def artist_albums(request):
+    # Make a request to the MusicBrainz API to get information about the artist
+    print(f"request.method {request.method}")
+
+    if request.method == 'POST':
+        # artist_name = request.GET.get('artist')
+        # album_name = request.GET.get('album')
+
+        # print(f"artist: {artist_name} ")
+        # print(f"album: {album_name} ")
+
+        artist_name = request.POST.get('artist')
+        print(f"artist: {artist_name}")
+        print(f"artist type: {type(artist_name)}")
+        # if artist_name:
+            # results = .filter(release__artist__name__icontains=artist)
+
+        artist = Artist.objects.filter(name__icontains=artist_name).first()
+        print(f"artist object: {artist}")
+        print(f"artist name from object: {artist.name}")
+        print(f"artist name from object: {artist.musicbrainz_id}")
+        response = requests.get(f'https://musicbrainz.org/ws/2/artist/{artist.musicbrainz_id}?inc=release-groups&fmt=json')
+        
+        if response.status_code == 200:
+            print(f"repsonse: {response}")
+            data = response.json()
+            print(f"data: {data}")
+            artist_name = data['name']
+            albums = []
+            # Extract relevant information about the artist's albums
+            for release_group in data['release-groups']:
+                if release_group['primary-type'] == 'Album':  # Filter only albums
+                    album = {
+                        'name': release_group['title'],
+                        'year_released': release_group.get('first-release-date', '').split('-')[0],
+                        'musicbrainz_id': release_group['id']
+                    }
+                    print(f"album: {album}")
+                    albums.append(album)
+            
+            # Pass artist name and albums to the template
+            context = {
+                'artist_name': artist_name,
+                'albums': albums
+            }
+            return render(request, 'a_collections/artist_overview.html', context)
+        else:
+            # Handle error response from the API
+            print("message: Failed to fetch artist information")
+
+    return render(request, "a_collections/artist_overview.html")
