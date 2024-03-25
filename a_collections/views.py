@@ -308,9 +308,18 @@ def search_release(request):
     results = []
     result_list = []
 
-    if request.method == 'GET':
-        artist_name = request.GET.get('artist_name')
-        album_name = request.GET.get('album_name')
+    if request.method == 'GET' or request.method == 'POST':
+        artist_name = request.GET.get('artist')
+        album_name = request.GET.get('album')
+
+        print(f"artist: {artist_name} ")
+        print(f"album: {album_name} ")
+
+        artist_name = request.POST.get('artist')
+        album_name = request.POST.get('album')
+
+        print(f"artist: {artist_name} ")
+        print(f"album: {album_name} ")
 
         results = release_search(artist_name, album_name)
 
@@ -331,8 +340,16 @@ def search_release(request):
             catalog_number = label_info[0].get('catalog-number', '') if label_info else ''
             barcode = release.get('barcode', '')
             language = release.get('text-representation', {}).get('language', '')
-            release_type = release['release-group']['primary-type'] if 'release-group' in release else ''
             status = release.get('status', '')
+
+            # release_type = release['release-group']['primary-type'] if 'release-group' in release else ''
+            if 'release-group' in release:
+                try:
+                    release_type = release['release-group']['primary-type']
+                except KeyError:
+                    release_type = ''
+            else:
+                release_type = ''
 
             # Initialize variables to accumulate CD and DVD track counts
             cd_tracks = 0
@@ -436,6 +453,33 @@ def search_release(request):
 
             }
             result_list.append(result_info)
+    
+    referring_page = request.META.get('HTTP_REFERER')
+    # Split the URL by '/' characters and get the last element
+    if referring_page:
+        print(f"referring url: {referring_page}")
+        # Split the URL by "/"
+        url_parts = referring_page.split('/')
+        print(f"referring url: {url_parts}")
+        # Get the last element of the list
+        last_part = url_parts[-2]
+        print("Last part of the URL:", last_part)
+        print(f"##################")
+        print(f"##################")
+        print(f"##################")
+        print(f"##################")
+        print(f"##################")
+        print(f"##################")
+        print(f"##################")
+        print(f"##################")
+
+        if last_part == 'list':
+            return render(request, "a_collections/partials/musicbrainz_results_table.html", {'results': result_list})
+        else:
+            return render(request, "a_collections/release_create.html", {'results': result_list})
+    else:
+        print("Referring page not found")
+
 
     return render(request, "a_collections/release_create.html", {'results': result_list})
 

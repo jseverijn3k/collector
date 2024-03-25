@@ -15,27 +15,36 @@
         Cover View
       </button>
             
-    <a href="{% url 'release-create' %}">
-      <button type="submit">
-        Add
-      </button>
-    </a>
   </div>
   
   <!-- Search form -->
-  <form id="search-form" hx-post="{% url 'collection-list' %}" hx-target="#results-container" hx-swap="innerHTML" hx-boost="true">
+  {% comment %} <form id="search-form" hx-post="{% url 'collection-list' %}" hx-target="#results-container" hx-swap="innerHTML" hx-boost="true">
     {% csrf_token %}
     <label for="artist_name">Artist Name:</label>
-    <input type="text" name="artist" placeholder="Search by artist">
+    <input type="text" name="artist" id="artist_name" placeholder="Search by artist">
     <br>
     <label for="album_name">Album Name:</label>
-    <input type="text" name="album" placeholder="Search by album name">
+    <input type="text" name="album" id="album_name" placeholder="Search by album name">
     <br>
     <br>
     <button type="submit" hx-vals="#search-form input" hx-trigger="click">Search</button>
     <button type="submit" name="reset" value="true" hx-trigger="click">Reset</button>
-  </form>
+  </form> {% endcomment %}
 
+  <form id="search-form" hx-target="#results-container" hx-swap="innerHTML" hx-boost="true">
+    {% csrf_token %}
+    <label for="artist_name">Artist Name:</label>
+    <input type="text" name="artist" id="artist_name" placeholder="Search by artist">
+    <br>
+    <label for="album_name">Album Name:</label>
+    <input type="text" name="album" id="album_name" placeholder="Search by album name">
+    <br>
+    <br>
+    <button type="submit" hx-post="{% url 'collection-list' %}" hx-vals="#search-form input" hx-trigger="click" data-action="search">Search</button>
+    <button type="submit" hx-post="{% url 'collection-list' %}" name="reset" value="true" hx-trigger="click">Reset</button>
+    <button type="submit" hx-post="{% url 'search_release' %}" hx-target="#results-container" hx-swap="innerHTML">Add</button>
+
+  </form>
 
   <div id="results-container" class="card !p-8">
     {% include 'a_collections/partials/results_table.html' %}

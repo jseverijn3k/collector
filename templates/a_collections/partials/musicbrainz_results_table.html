@@ -1,0 +1,81 @@
+<div id="results-table">
+    {% if results %}
+    <table>
+        <thead>
+          <tr>
+            <th class="hidden-mobile">Cover</th>
+            <th>Match</th>
+            <th>Name <a href="?sort=name">▲</a></th>
+            <th>Artist <a href="?sort=artist">▲</a></th>
+            <th>Format</th>
+            <th class="hidden-mobile">Tracks</th>
+            <th class="hidden-mobile">Date <a href="?sort=date">▲</a></th>
+            <th>Label <a href="?sort=label">▲</a></th>
+            <th>Catalog#</th>
+            <th>Barcode</th>
+            <th class="hidden-mobile">Lng</th>
+            <th class="hidden-mobile">Type <a href="?sort=type">▲</a></th>
+            <th class="hidden-mobile">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for result in results %}
+          <tr>
+            <td class="hidden-mobile">
+              {% comment %} {{result.cover_art_images}} {% endcomment %}
+              {% for image_info in result.cover_art_images %}
+                <img src="{{ image_info.image_small }}" alt="Cover Art" width="50" height="50">
+              {% endfor %}          
+            </td>
+            <td>{{ result.ext_score }}</td>
+            <td>{{ result.name }}</td>
+            <td>{{ result.artist }}</td>
+            <td>{{ result.format }}</td>
+            <td class="hidden-mobile">{{ result.cd_tracks }} {% if result.dvd_tracks > 0 %} + {{ result.dvd_tracks }} {% endif %}</td>
+            <td class="hidden-mobile">{{ result.date }}</td>
+            <td>{{ result.record_label }}</td>
+            <td>{{ result.catalog_number }}</td>
+            <td>{{ result.barcode }}</td>
+            <td>{{ result.language }}</td>
+            <td class="hidden-mobile">{{ result.language }}</td>
+            <td class="hidden-mobile">{{ result.type }}</td>
+            <td class="hidden-mobile">{{ result.status }}</td>
+            <td>
+              <form method="post" action="{% url 'add_artist' %}">
+                {% csrf_token %}
+                <input type="hidden" name="ext_score" value="{{ result.ext_score }}">
+                <input type="hidden" name="cover_art_images" value="{{ result.cover_art_images}}">
+                <input type="hidden" name="release_id" value="{{ result.release_id }}">
+                <input type="hidden" name="release_name" value="{{ result.name }}">
+                <input type="hidden" name="artist_id" value="{{ result.artist_id }}">
+                <input type="hidden" name="artist_name" value="{{ result.artist }}">
+                <input type="hidden" name="format" value="{{ result.format }}">
+                <input type="hidden" name="date" value="{{ result.date }}">
+                <input type="hidden" name="cd_tracks" value="{{ result.cd_tracks }}">
+                <input type="hidden" name="dvd_tracks" value="{{ result.dvd_tracks }}">
+                <input type="hidden" name="type" value="{{ result.release_type }}">
+                <input type="hidden" name="barcode" value="{{ result.barcode }}">
+                <input type="hidden" name="catalog_number" value="{{ result.catalog_number }}">
+                <input type="hidden" name="language" value="{{ result.language }}">
+                <input type="hidden" name="status" value="{{ result.status }}">
+                <input type="hidden" name="label" value="{{ result.label }}">
+                <input type="hidden" name="label_id" value="{{ result.label_id }}">
+                <button type="submit">Add</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+  </div>
+
+
+<style>
+  /* Hide certain columns on mobile devices */
+  @media only screen and (max-width: 600px) {
+    .hidden-mobile {
+      display: none;
+    }
+  }
+  </style>

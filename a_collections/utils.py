@@ -20,7 +20,7 @@ def release_search(artist, album):
     result = mbz.search_releases(artist=artist, release=album, limit=10)
     # On success, result is a dictionary with a single key:
     # "release-list", which is a list of dictionaries.
-    print(result)
+    # print(result)
     return result
 
 
