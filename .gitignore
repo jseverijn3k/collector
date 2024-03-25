@@ -51,6 +51,10 @@ var/
 .installed.cfg
 *.egg
 
+# backup and mediafiles
+mediafiles/
+backup/
+
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
@@ -73,8 +77,6 @@ coverage.xml
 *.mo
 *.pot
 
-# mediafiles
-mediafiles/
 
 # Sphinx documentation
 docs/_build/
@@ -91,4 +93,4 @@ __pycache__/
 local_settings.py
 
 .env
-# db.sqlite3
+db.sqlite3
