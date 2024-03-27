@@ -14,8 +14,13 @@ import requests
 import shutil
 from django.http import HttpResponse
 
-from a_collections.utils import artist_search, release_search, milliseconds_to_minutes_seconds
-from a_collections.models import Artist, Release, Cover_Art, Record_Label, Collection, Track
+from a_collections.utils import (artist_search, 
+                                 release_search, 
+                                 milliseconds_to_minutes_seconds, 
+                                 release_group_search, 
+                                 get_release_group_info
+                                 )
+from a_collections.models import Artist, Release, Cover_Art, Record_Label, Collection, Track, Release_Group
 from a_collections.forms import ReleaseCreateForm, ReleaseEditForm, ArtistCreateForm, ArtistEditForm
 
 # Create your views here.
@@ -323,6 +328,14 @@ def search_release(request):
 
         results = release_search(artist_name, album_name)
 
+        # TODO release group uit release halen en opslaan
+        # release_group_results = release_group_search(artist_name, album_name)
+        # print(f"$$$$$$$$$$$$$$$$$$$")
+        # print(f"$$$$$$$$$$$$$$$$$$$")
+        # print(f"release results : {results}")
+        # print(f"$$$$$$$$$$$$$$$$$$$")
+        # print(f"$$$$$$$$$$$$$$$$$$$")
+
         # Assuming 'result' is the dictionary containing the JSON data
         for release in results['release-list']:
             release_id = release.get('id', None)
@@ -331,8 +344,10 @@ def search_release(request):
             name = release.get('title', '')
 
             # artist_id = release['artist-credit'][0].get('id', None) if 'artist-credit' in release else None
+            # TODO: artist naar Release group
             artist_id = release['artist-credit'][0]['artist']['id'] if 'artist-credit' in release and release['artist-credit'] else ''
             artist = release['artist-credit'][0]['name'] if 'artist-credit' in release else ''
+            
             country_date = release.get('country', '') + ' ' + release.get('date', '') if any(key in release for key in ['country', 'date']) else ''
             label_info = release.get('label-info-list', [])
             label = label_info[0].get('label', {}).get('name', '') if label_info else ''
@@ -342,10 +357,21 @@ def search_release(request):
             language = release.get('text-representation', {}).get('language', '')
             status = release.get('status', '')
 
+            # TODO: REleae group toevoegen
             # release_type = release['release-group']['primary-type'] if 'release-group' in release else ''
             if 'release-group' in release:
                 try:
                     release_type = release['release-group']['primary-type']
+                    release_group_id = release['release-group']['id']
+                    release_group_type = release['release-group']['primary-type']
+                    release_group_title = release['release-group']['title']
+                    print(f"@@@@@@@@@@@@@")
+                    print(f"@@@@@@@@@@@@@")
+                    print(f"release group info:: id {release_group_id} | type {release_group_type} | title {release_group_title}")
+                    get_release_group_info(release_group_id)
+                    print(f"@@@@@@@@@@@@@")
+                    print(f"@@@@@@@@@@@@@")
+
                 except KeyError:
                     release_type = ''
             else:
@@ -398,30 +424,34 @@ def search_release(request):
                 format= 'DVD'
 
             # Print the information
-            # print("Release_id:", release_id)
-            # print("Name:", name)
-            # print("Artist_id:", artist_id)
+            print("Release_id:", release_id)
+            print("Name:", name)
+            print("Artist_id:", artist_id)
 
-            # print("Artist:", artist)
-            # print("Format:", format)
+            print("Artist:", artist)
+            print("Format:", format)
 
-            # if cd_tracks > 0 and dvd_tracks == 0:
-            #     print(f"Tracks: {cd_tracks}")
-            # elif cd_tracks > 0 and dvd_tracks >0:
-            #     print(f"Tracks: {cd_tracks} + {dvd_tracks}")
-            # elif cd_tracks == 0 and dvd_tracks >0:
-            #     print(f"Tracks: {dvd_tracks}")
+            if cd_tracks > 0 and dvd_tracks == 0:
+                print(f"Tracks: {cd_tracks}")
+            elif cd_tracks > 0 and dvd_tracks >0:
+                print(f"Tracks: {cd_tracks} + {dvd_tracks}")
+            elif cd_tracks == 0 and dvd_tracks >0:
+                print(f"Tracks: {dvd_tracks}")
 
-            # print("Country/Date:", country_date)
-            # print("Label:", label)
-            # print("Label_id:", label_id)
+            print("Country/Date:", country_date)
+            print("Label:", label)
+            print("Label_id:", label_id)
 
-            # print("Catalog#:", catalog_number)
-            # print("Barcode:", barcode)
-            # print("Language:", language)
-            # print("Release_type:", release_type)
-            # print("Status:", status)
-            # print()
+            print("Catalog#:", catalog_number)
+            print("Barcode:", barcode)
+            print("Language:", language)
+            print("Release_type:", release_type)
+            print("Status:", status)
+                
+            print("Release group id:", release_group_id) 
+            print("Release group title:", release_group_title) 
+            print("Release group type:", release_group_type) 
+            print()
 
             result_info = {
                 # album info
@@ -433,6 +463,10 @@ def search_release(request):
                 'artist_id': artist_id,
                 'artist': artist,
                 
+                # release-group info
+                'release_group_id': release_group_id,
+                'release_group_title': release_group_title,
+
                 # release info
                 'format': format,
                 'cd_tracks': cd_tracks,
@@ -454,6 +488,7 @@ def search_release(request):
             }
             result_list.append(result_info)
     
+    
     referring_page = request.META.get('HTTP_REFERER')
     # Split the URL by '/' characters and get the last element
     if referring_page:
@@ -465,22 +500,21 @@ def search_release(request):
         last_part = url_parts[-2]
         print("Last part of the URL:", last_part)
         print(f"##################")
-        print(f"##################")
-        print(f"##################")
-        print(f"##################")
-        print(f"##################")
-        print(f"##################")
-        print(f"##################")
-        print(f"##################")
 
         if last_part == 'list':
+            print("$$$$$$$$$$$")
+            print("$$$$$$$$$$$")
+            print(f"result list: {result_list}")
+            print("$$$$$$$$$$$")
+            print("$$$$$$$$$$$")
             return render(request, "a_collections/partials/musicbrainz_results_table.html", {'results': result_list})
         else:
+            print(f"result list: {result_list}")
             return render(request, "a_collections/release_create.html", {'results': result_list})
     else:
         print("Referring page not found")
 
-
+    print(f"result list: {result_list}")
     return render(request, "a_collections/release_create.html", {'results': result_list})
 
 
@@ -539,14 +573,18 @@ def add_artist_view(request):
         cover_art_images_str = request.POST.get('cover_art_images')
         label_name = request.POST.get('label')
         label_id = request.POST.get('label_id')
+        release_group_id = request.POST.get('release_group_id')
+        release_group_title =request.POST.get('release_group_title')
 
-        print(f"id: {artist_id} | name: {artist_name} | ext_score: {ext_score}")
+        print(f"id: {artist_id} | name: {artist_name} | ext_score: {ext_score} | release_group_title {release_group_title}")
         
         user = request.user
         artist = Artist.objects.filter(musicbrainz_id=artist_id).first()
         release = Release.objects.filter(musicbrainz_id=release_id).first()
         collection = Collection.objects.filter(release=release, user=user).first()
+        release_group = Release_Group.objects.filter(musicbrainz_id=release_group_id).first()
         
+
         if collection:
             print(f"release already in collection {release} of user ")
         
@@ -563,6 +601,24 @@ def add_artist_view(request):
         else:
             messages.success(request, f'Artist {artist_name} already in the database')  
 
+        if release_group:
+            print(f"release group already exists")
+        else:
+            release_group_info = get_release_group_info(release_group_id)
+            print("###################")
+            print("###################")
+            print(f"release_group_info {release_group_info}")
+            print("###################")
+            print("###################")
+            #TDOD: juiste info invullen uit release_group_info
+            release_group = Release_Group.objects.create(
+                musicbrainz_id = release_group_id,
+                name = release_group_title,
+                artist = artist,
+                first_release_date = '1991-01-01'
+            )
+            messages.success(request, f'Release group {release_group.name} added succesfully')  
+
         if not label:
             label = Record_Label.objects.create(
                 musicbrainz_id=label_id,
@@ -578,7 +634,7 @@ def add_artist_view(request):
             release = Release.objects.create(
                 musicbrainz_id=release_id,
                 name=release_name,
-                artist=artist,
+                release_group = release_group,
                 barcode = barcode,
                 catalog_number = catalog_number,
                 status = status,
@@ -911,33 +967,48 @@ def artist_albums(request):
 
         artist_name = request.POST.get('artist')
         print(f"artist: {artist_name}")
-        print(f"artist type: {type(artist_name)}")
-        # if artist_name:
-            # results = .filter(release__artist__name__icontains=artist)
 
         artist = Artist.objects.filter(name__icontains=artist_name).first()
-        print(f"artist object: {artist}")
-        print(f"artist name from object: {artist.name}")
-        print(f"artist name from object: {artist.musicbrainz_id}")
         response = requests.get(f'https://musicbrainz.org/ws/2/artist/{artist.musicbrainz_id}?inc=release-groups&fmt=json')
-        
+        # response = requests.get(f'https://musicbrainz.org/ws/2/artist/{artist.musicbrainz_id}')
+        print(f"data: {response}")
         if response.status_code == 200:
-            print(f"repsonse: {response}")
             data = response.json()
             print(f"data: {data}")
+
+            # Print artist information
+            print("Artist Name:", data.get("name"))
+            print("Begin Area:", data.get("begin-area", {}).get("name"))
+            print("Country:", data.get("country"))
+            print("Life Span:", data.get("life-span"))
+            print()
+
+            # Print Wikipedia link if available
+            artist_wikipedia(data.get("name"))
+
+            # Print tags if available
+            print(f"musicbrainz id: {data.get("id")}")
+            artist_tags(data.get("id"))
+
+            # ORIGINAL CODE:
             artist_name = data['name']
             albums = []
             # Extract relevant information about the artist's albums
             for release_group in data['release-groups']:
                 if release_group['primary-type'] == 'Album':  # Filter only albums
                     album = {
-                        'name': release_group['title'],
                         'year_released': release_group.get('first-release-date', '').split('-')[0],
-                        'musicbrainz_id': release_group['id']
+                        'name': release_group['title'],
+                        'musicbrainz_id': release_group['id'],
+                        'release_id' : release_group['id'],
+                        'primary_type' : release_group['primary-type'],
+                        'secondary_types' : release_group.get('secondary-types', []),
+                        'secondary_type_ids' : release_group.get('secondary-type-ids', []),
                     }
                     print(f"album: {album}")
                     albums.append(album)
             
+            # print(albums)
             # Pass artist name and albums to the template
             context = {
                 'artist_name': artist_name,
@@ -949,3 +1020,38 @@ def artist_albums(request):
             print("message: Failed to fetch artist information")
 
     return render(request, "a_collections/artist_overview.html")
+
+
+def artist_wikipedia(artist_name):
+    url = f"https://en.wikipedia.org/w/api.php?action=query&format=json&prop=info&inprop=url&titles={artist_name}"
+
+    response = requests.get(url)
+    data = response.json()
+
+    # Extract Wikipedia URL
+    pages = data.get("query", {}).get("pages", {})
+    if pages:
+        page_id = list(pages.keys())[0]
+        wikipedia_url = pages[page_id].get("fullurl", "")
+        print("Wikipedia URL:", wikipedia_url)
+    else:
+        print("Wikipedia URL not found.")
+
+def artist_tags(artist_id):
+    url = f"https://musicbrainz.org/ws/2/artist/{artist_id}/tags?fmt=json"
+
+    response = requests.get(url)
+    data = response.json()
+
+    # Print genre tags if available
+    tags = data.get("tags", [])
+    if tags:
+        print("Genre Tags:")
+        for tag in tags:
+            print(tag.get("name"))
+    else:
+        print("No genre tags found.")
+
+
+
+

@@ -56,6 +56,8 @@ urlpatterns = [
     path('search_artist/', search_artist, name='search_artist'),
     path('add_artist/', add_artist_view, name='add_artist'),
     path('search_release/', search_release, name='search_release'),
+    # path('search_release_group/', search_release_group, name='search_release_group'),
+
 
     #TODO: artist overview
     path('artist_album/', artist_albums, name='artist_albums'),

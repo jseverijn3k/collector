@@ -43,7 +43,7 @@
     <button type="submit" hx-post="{% url 'collection-list' %}" hx-vals="#search-form input" hx-trigger="click" data-action="search">Search</button>
     <button type="submit" hx-post="{% url 'collection-list' %}" name="reset" value="true" hx-trigger="click">Reset</button>
     <button type="submit" hx-post="{% url 'search_release' %}" hx-target="#results-container" hx-swap="innerHTML">Add</button>
-
+    {% comment %} <button type="submit" hx-post="{% url 'search_release_group' %}" hx-target="#results-container" hx-swap="innerHTML">Add VIA GROUP</button> {% endcomment %}
   </form>
 
   <div id="results-container" class="card !p-8">

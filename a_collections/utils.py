@@ -1,4 +1,4 @@
-
+import requests
 import musicbrainzngs as mbz 
 mbz.set_useragent("collector.io", "0.1", "(jeff@jeff.com)")
 
@@ -22,6 +22,73 @@ def release_search(artist, album):
     # "release-list", which is a list of dictionaries.
     # print(result)
     return result
+
+
+
+""" 
+Function to find all release groups that matcht teh criteria
+
+input: artist name and album
+output: all release groups that match the criteria
+
+example:
+    artist_name = "U2"
+    album_title = "The Joshua Tree"
+    
+    release_groups = search_release_group(artist_name, album_title)
+"""
+def release_group_search(artist_name, album_title):
+    if artist_name and album_title:
+        url = f"https://musicbrainz.org/ws/2/release-group/?query=artist:{artist_name} AND release:{album_title}&fmt=json"
+    else:
+        url = f"https://musicbrainz.org/ws/2/release-group/?query=artist:{artist_name}&fmt=json"
+    response = requests.get(url)
+    data = response.json()
+    release_groups = data.get("release-groups", [])
+
+    for release_group in release_groups:
+        print("Title:", release_group.get("title"))
+        print("Release Group ID:", release_group.get("id"))
+        print()
+
+    return release_groups
+
+
+def get_release_group_info(release_group_id):
+    print(f"release group id: {release_group_id}")
+
+    # url = f"https://musicbrainz.org/ws/2/release-group/{release_group_id}&fmt=json"
+    url = f"https://musicbrainz.org/ws/2/release-group/{release_group_id}?inc=aliases%2Bartist-credits%2Breleases&fmt=json"	
+
+    response = requests.get(url)
+    print(f"response: {response}")
+    
+    if response.status_code == 200:
+        print(f"response {response}")
+
+        data = response.json()
+        print(f"response json {data}")
+        print("First release date:", data.get("first-release-date"))
+        print("Release Group Title:", data.get("title"))
+        print("Primary Type:", data.get("primary-type"))
+        print("Secondary Types:", data.get("secondary-types", []))
+        # Print other relevant information as needed
+    
+        return data
+    else:
+        print(f"Release group information not found. Response is {response.status_code}")
+        return None
+
+    # # Example usage
+    # release_group_id = "c6139219-0dd0-3382-94b8-fb4714ab8792"  # Example release group ID
+    # release_group_info = get_release_group_info(release_group_id)
+    # if release_group_info:
+    #     print("Release Group Title:", release_group_info.get("title"))
+    #     print("Primary Type:", release_group_info.get("primary-type"))
+    #     print("Secondary Types:", release_group_info.get("secondary-types", []))
+    #     # Print other relevant information as needed
+    # else:
+    #     print("Release group information not found.")
 
 
 def milliseconds_to_minutes_seconds(milliseconds):

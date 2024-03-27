@@ -1,4 +1,4 @@
-{% extends 'layouts/b.html' %}
+{% extends 'layouts/d.html' %}
 
 {% block content %}
 
@@ -25,7 +25,8 @@
     <ul>
         {% for album in albums %}
             <li>
-                <strong>{{ album.name }}</strong> ({{ album.year_released }}) - MusicBrainz ID: {{ album.musicbrainz_id }}
+                {{ album.year_released }} | {{ album.name }} | {{ album.musicbrainz_id }} | 
+                {{album.primary_type}} |{{album.secondary_types}} 
             </li>
         {% endfor %}
     </ul>

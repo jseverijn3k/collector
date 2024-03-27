@@ -1,5 +1,6 @@
 <div id="results-table">
     {% if results %}
+    {{result}}
     <table>
         <thead>
           <tr>
@@ -16,6 +17,9 @@
             <th class="hidden-mobile">Lng</th>
             <th class="hidden-mobile">Type <a href="?sort=type">▲</a></th>
             <th class="hidden-mobile">Status</th>
+            <th class="hidden-mobile">RG Title</th>
+            <th class="hidden-mobile">RG ID</th>
+            
           </tr>
         </thead>
         <tbody>
@@ -40,6 +44,8 @@
             <td class="hidden-mobile">{{ result.language }}</td>
             <td class="hidden-mobile">{{ result.release_type }}</td>
             <td class="hidden-mobile">{{ result.status }}</td>
+            <td class="hidden-mobile">{{ result.release_group_title }}</td>
+            <td class="hidden-mobile">{{ result.release_group_id }}</td>
             <td>
               <form method="post" action="{% url 'add_artist' %}">
                 {% csrf_token %}
@@ -60,6 +66,8 @@
                 <input type="hidden" name="status" value="{{ result.status }}">
                 <input type="hidden" name="label" value="{{ result.label }}">
                 <input type="hidden" name="label_id" value="{{ result.label_id }}">
+                <input type="hidden" name="release_group_id" value="{{ result.release_group_id }}">
+                <input type="hidden" name="release_group_title" value="{{ result.release_group_title }}">
                 <button type="submit">Add</button>
               </form>
             </td>

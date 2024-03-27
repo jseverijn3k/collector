@@ -30,8 +30,33 @@ class Record_Label(models.Model):
 
     def __str__(self):
         return self.name
-    
 
+
+"""
+Abstract type, not buayble in a shop. e.g. all vrsions of U2's joshua tree form a release group
+"""    
+class Release_Group(models.Model):
+    id = models.UUIDField(
+        primary_key=True, default=uuid.uuid4, editable=False, max_length=100
+    )
+    musicbrainz_id = models.CharField(unique=True, blank=True, null=True, max_length=255)
+    musicbrainz_type_id = models.CharField(unique=True, blank=True, null=True, max_length=255)
+    musicbrainz_primrary_type_id = models.CharField(unique=True, blank=True, null=True, max_length=255)
+    name = models.CharField(max_length=255)
+    artist = models.ForeignKey(Artist, on_delete=models.SET_NULL, null=True, related_name="artists")
+    primrary_type = models.CharField(unique=True, blank=True, null=True, max_length=255)
+    first_release_date = models.DateField()
+
+    def __str__(self):
+        return f"{self.name} | {self.artist.name}"
+
+    class Meta:
+        ordering = ['name' , 'artist']
+
+
+"""
+What you can buy in a store like a digital download, Vinyl, Casette or a CD
+"""    
 class Release(models.Model):
     class Type(models.IntegerChoices):
         CD = 1  
@@ -57,16 +82,20 @@ class Release(models.Model):
     cd_tracks = models.IntegerField()
     dvd_tracks = models.IntegerField() 
     record_label = models.ForeignKey(Record_Label, on_delete=models.SET_NULL, null=True, blank=True, related_name="record_labels")
-    release_year = models.IntegerField(null=True, blank=True)
-    artist = models.ForeignKey(Artist, on_delete=models.SET_NULL, null=True, related_name="artists")
+    # release_year = models.IntegerField(null=True, blank=True)
+    # artist = models.ForeignKey(Artist, on_delete=models.SET_NULL, null=True, related_name="artists")
+    release_group = models.ForeignKey(Release_Group, on_delete=models.SET_NULL, null=True, related_name="release_group")
     
     def __str__(self):
-        return f"{self.name} | {self.artist.name}"
+        # return f"{self.name} | {self.release_group.artist.name}"
+        return f"{self.name} "
 
     class Meta:
-        ordering = ['name' , 'artist']
+        ordering = ['name',]
 
-
+"""
+Tracks of the release
+"""
 class Track(models.Model):
     musicbrainz_id = models.CharField(unique=True, blank=True, null=True, max_length=255)
     release = models.ForeignKey(Release, on_delete=models.CASCADE, related_name='tracks')

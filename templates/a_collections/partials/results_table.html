@@ -34,7 +34,7 @@
                 {% endfor %} {% endcomment %}
             </td>
             <td>{{ result.release.name }}</td>
-            <td>{{ result.release.artist }}</td>
+            <td>{{ result.release.release_group.artist }}</td>
             <td>{{ result.release.format }}</td>
             <td class="hidden-mobile">{{ result.release.cd_tracks }} {% if result.release.dvd_tracks > 0 %} + {{ result.release.dvd_tracks }} {% endif %}</td>
             <td class="hidden-mobile">{{ result.release.date }}</td>
