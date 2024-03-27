@@ -20,7 +20,10 @@ class Artist(models.Model):
     class Meta:
         ordering = ['name']
 
-    
+
+"""
+The tecord label of a release
+""" 
 class Record_Label(models.Model):
     id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False, max_length=100
