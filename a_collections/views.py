@@ -365,12 +365,12 @@ def search_release(request):
                     release_group_id = release['release-group']['id']
                     release_group_type = release['release-group']['primary-type']
                     release_group_title = release['release-group']['title']
-                    print(f"@@@@@@@@@@@@@")
-                    print(f"@@@@@@@@@@@@@")
+                    # print(f"@@@@@@@@@@@@@")
+                    # print(f"@@@@@@@@@@@@@")
                     print(f"release group info:: id {release_group_id} | type {release_group_type} | title {release_group_title}")
-                    get_release_group_info(release_group_id)
-                    print(f"@@@@@@@@@@@@@")
-                    print(f"@@@@@@@@@@@@@")
+                    # get_release_group_info(release_group_id)
+                    # print(f"@@@@@@@@@@@@@")
+                    # print(f"@@@@@@@@@@@@@")
 
                 except KeyError:
                     release_type = ''
@@ -502,19 +502,12 @@ def search_release(request):
         print(f"##################")
 
         if last_part == 'list':
-            print("$$$$$$$$$$$")
-            print("$$$$$$$$$$$")
-            print(f"result list: {result_list}")
-            print("$$$$$$$$$$$")
-            print("$$$$$$$$$$$")
             return render(request, "a_collections/partials/musicbrainz_results_table.html", {'results': result_list})
         else:
-            print(f"result list: {result_list}")
             return render(request, "a_collections/release_create.html", {'results': result_list})
     else:
         print("Referring page not found")
 
-    print(f"result list: {result_list}")
     return render(request, "a_collections/release_create.html", {'results': result_list})
 
 
@@ -622,10 +615,10 @@ def add_artist_view(request):
                 artist = artist,
                 first_release_date = data.get('first-release-date'),
                 primrary_type = data.get('primary-type'),
-                # secondary_types = data.get("secondary-types", [])),
-                # secondary_type_ids = data.get('secondary-type-ids'),
-                
+                secondary_types = data.get("secondary-types", []),
+                secondary_type_ids = data.get('secondary-type-ids'),
             )
+            print(f"Release group object: {release_group}")
             messages.success(request, f'Release group {release_group.name} added succesfully')  
 
         if not label:

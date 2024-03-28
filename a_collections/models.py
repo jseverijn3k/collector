@@ -43,13 +43,13 @@ class Release_Group(models.Model):
         primary_key=True, default=uuid.uuid4, editable=False, max_length=100
     )
     musicbrainz_id = models.CharField(unique=True, blank=True, null=True, max_length=255)
-    musicbrainz_type_id = models.CharField(unique=True, blank=True, null=True, max_length=255)
-    musicbrainz_primrary_type_id = models.CharField(unique=True, blank=True, null=True, max_length=255)
+    musicbrainz_type_id = models.CharField(blank=True, null=True, max_length=255)
+    musicbrainz_primrary_type_id = models.CharField(blank=True, null=True, max_length=255)
     name = models.CharField(max_length=255)
     artist = models.ForeignKey(Artist, on_delete=models.SET_NULL, null=True, related_name="artists")
     primrary_type = models.CharField(blank=True, null=True, max_length=255)
     secondary_types = models.CharField(blank=True, null=True, max_length=255)
-    secondary_type_ids = models.CharField(unique=True, blank=True, null=True, max_length=255)
+    secondary_type_ids = models.CharField(blank=True, null=True, max_length=255)
     first_release_date = models.DateField()
 
     def __str__(self):
@@ -153,7 +153,7 @@ class Collection(models.Model):
     purchase_price = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.user} | {self.condition} | {self.release.name} | {self.release.artist.name}"
+        return f"{self.user} | {self.release.name}"
 
 
 class Tag(models.Model):
