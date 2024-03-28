@@ -607,15 +607,24 @@ def add_artist_view(request):
             release_group_info = get_release_group_info(release_group_id)
             print("###################")
             print("###################")
+            print(f"release_group_info {type(release_group_info)}")
             print(f"release_group_info {release_group_info}")
             print("###################")
             print("###################")
-            #TDOD: juiste info invullen uit release_group_info
+            data = release_group_info
+            #TODO: juiste info invullen uit release_group_info
+            # dus niet via d efront end maar vanuit een aparte call!!
             release_group = Release_Group.objects.create(
                 musicbrainz_id = release_group_id,
+                # musicbrainz_type_id= data.get('type-id'),
+                musicbrainz_primrary_type_id = data.get("primary-type-id"),
                 name = release_group_title,
                 artist = artist,
-                first_release_date = '1991-01-01'
+                first_release_date = data.get('first-release-date'),
+                primrary_type = data.get('primary-type'),
+                # secondary_types = data.get("secondary-types", [])),
+                # secondary_type_ids = data.get('secondary-type-ids'),
+                
             )
             messages.success(request, f'Release group {release_group.name} added succesfully')  
 

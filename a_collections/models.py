@@ -47,7 +47,9 @@ class Release_Group(models.Model):
     musicbrainz_primrary_type_id = models.CharField(unique=True, blank=True, null=True, max_length=255)
     name = models.CharField(max_length=255)
     artist = models.ForeignKey(Artist, on_delete=models.SET_NULL, null=True, related_name="artists")
-    primrary_type = models.CharField(unique=True, blank=True, null=True, max_length=255)
+    primrary_type = models.CharField(blank=True, null=True, max_length=255)
+    secondary_types = models.CharField(blank=True, null=True, max_length=255)
+    secondary_type_ids = models.CharField(unique=True, blank=True, null=True, max_length=255)
     first_release_date = models.DateField()
 
     def __str__(self):

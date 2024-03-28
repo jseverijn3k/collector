@@ -53,7 +53,12 @@ def release_group_search(artist_name, album_title):
 
     return release_groups
 
+"""
+Function to get the relesae groeup info.
 
+input:  release group id
+Output: dict with release group info
+"""
 def get_release_group_info(release_group_id):
     print(f"release group id: {release_group_id}")
 
@@ -67,28 +72,17 @@ def get_release_group_info(release_group_id):
         print(f"response {response}")
 
         data = response.json()
-        print(f"response json {data}")
-        print("First release date:", data.get("first-release-date"))
-        print("Release Group Title:", data.get("title"))
-        print("Primary Type:", data.get("primary-type"))
-        print("Secondary Types:", data.get("secondary-types", []))
+        # print(f"response json {data}")
+        # print("First release date:", data.get("first-release-date"))
+        # print("Release Group Title:", data.get("title"))
+        # print("Primary Type:", data.get("primary-type"))
+        # print("Secondary Types:", data.get("secondary-types", []))
         # Print other relevant information as needed
     
         return data
     else:
         print(f"Release group information not found. Response is {response.status_code}")
         return None
-
-    # # Example usage
-    # release_group_id = "c6139219-0dd0-3382-94b8-fb4714ab8792"  # Example release group ID
-    # release_group_info = get_release_group_info(release_group_id)
-    # if release_group_info:
-    #     print("Release Group Title:", release_group_info.get("title"))
-    #     print("Primary Type:", release_group_info.get("primary-type"))
-    #     print("Secondary Types:", release_group_info.get("secondary-types", []))
-    #     # Print other relevant information as needed
-    # else:
-    #     print("Release group information not found.")
 
 
 def milliseconds_to_minutes_seconds(milliseconds):
