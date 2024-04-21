@@ -29,16 +29,19 @@ The backup folder should be created with:
 ### MVP
 
 * add all artist albums / release groups (albums, eps, singles) to the database
+  * also add them to the backup and restore routine
 * show per artist which release groups (albums, eps, singles) you own
+  * also add them to the backup and restore routine
 * speed up the search when you search for a release -> now waiting for the cover art takes to long
 * when there are a lot of releases more should be shown -> pagination?
 
 * make a "want to buy list" -> based on the artist release groups you don't own yet (not releases)
   * export this as a text file so you can take it as a shopping list with you
-* create a better filter system -> format (cd / vinyl / etc..)
+  * also add this to the backup and restore routine
 
 ### MVP-2
 
+* create a better filter system -> format (cd / vinyl / etc..)
 * show artist info -> from wikipedia
 
 ### Nice to haves
