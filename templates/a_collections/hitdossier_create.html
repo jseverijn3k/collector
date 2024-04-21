@@ -1,0 +1,32 @@
+{% extends 'layouts/d.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="card !p-8">
+
+    <h1>HitDossier Online Scraper</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="url_input">Enter URL:</label>
+        <input type="text" id="url_input" name="url">
+        <button type="submit">Scrape Artists</button>
+    </form>
+    {% if artists %}
+        <h2>Artists:</h2>
+        <ul>
+            {% for artist in artists %}
+                <li>{{ artist }}</li>
+            {% endfor %}
+        </ul>
+        {% comment %} <form method="post" action="{% url 'add_to_database' %}">
+            {% csrf_token %}
+            {% for artist in artists %}
+                <input type="hidden" name="artist_names[]" value="{{ artist }}">
+            {% endfor %}
+            <button type="submit">Add to Database</button>
+        </form> {% endcomment %}
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -58,6 +58,9 @@ urlpatterns = [
     path('search_release/', search_release, name='search_release'),
     # path('search_release_group/', search_release_group, name='search_release_group'),
 
+    #TODO hitdossier-online
+    path('hitdossier_create/', hitdossier_create, name='hitdossier-create'),
+
 
     #TODO: artist overview
     path('artist_album/', artist_albums, name='artist_albums'),

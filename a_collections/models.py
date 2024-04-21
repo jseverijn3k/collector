@@ -4,7 +4,7 @@ import uuid
 # Create your models here.
 
 """
-The Artist of a release group
+The Artist of a release group, e.g. U2 or Phil Collins
 """ 
 class Artist(models.Model):
     id = models.UUIDField(

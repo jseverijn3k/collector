@@ -20,6 +20,7 @@ from a_collections.utils import (artist_search,
                                  release_group_search, 
                                  get_release_group_info,
                                  format_date,
+                                 get_artists_from_hitdossier_online,
                                  )
 from a_collections.models import Artist, Release, Cover_Art, Record_Label, Collection, Track, Release_Group
 from a_collections.forms import ReleaseCreateForm, ReleaseEditForm, ArtistCreateForm, ArtistEditForm
@@ -1069,9 +1070,8 @@ def artist_wikipedia(artist_name):
     else:
         new_artist_name = artist_name
 
-    # url = f"https://nl.wikipedia.org/w/api.php?action=query&format=json&prop=info&inprop=url&titles={artist_name}&exintro=1"
-    # url = f"https://en.wikipedia.org/w/api.php?action=opensearch&search={artist_name}&limit=1&format=json"
     url = f"https://en.wikipedia.org/w/api.php?action=query&titles={artist_name}&prop=extracts&format=json&exintro=1"
+
     response = requests.get(url)
     data = response.json()
     print(f"wikipedia response: {response}")
@@ -1119,3 +1119,13 @@ def artist_tags(artist_id):
 
 
 
+from django.shortcuts import render
+from .utils import get_artists_from_hitdossier_online  # Import your scraping function
+
+def hitdossier_create(request):
+    if request.method == 'POST':
+        url = request.POST.get('url')
+        if url:
+            artists = get_artists_from_hitdossier_online(url)
+            return render(request, 'a_collections/hitdossier_create.html', {'artists': artists})
+    return render(request, 'a_collections/hitdossier_create.html')
