@@ -3,6 +3,9 @@ from django.conf import settings
 import uuid
 # Create your models here.
 
+"""
+The Artist of a release group
+""" 
 class Artist(models.Model):
     id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False, max_length=100
@@ -22,7 +25,7 @@ class Artist(models.Model):
 
 
 """
-The tecord label of a release
+The Record Label of a release
 """ 
 class Record_Label(models.Model):
     id = models.UUIDField(
@@ -36,7 +39,7 @@ class Record_Label(models.Model):
 
 
 """
-Abstract type, not buayble in a shop. e.g. all vrsions of U2's joshua tree form a release group
+Abstract type, not buyable in a shop. e.g. all versions of U2's joshua tree form a release group
 """    
 class Release_Group(models.Model):
     id = models.UUIDField(
@@ -99,7 +102,8 @@ class Release(models.Model):
         ordering = ['name',]
 
 """
-Tracks of the release
+Tracks of the release. Eeleases within a release group can have a different track list 
+(e.g. vinyl vs cd or cd's with different bonus tracks) 
 """
 class Track(models.Model):
     musicbrainz_id = models.CharField(unique=True, blank=True, null=True, max_length=255)
@@ -128,6 +132,7 @@ class Cover_Art(models.Model):
 
     def __str__(self):
         return f"Cover Art for {self.release.name}"
+
 
 class Collection(models.Model):
     class Condition(models.IntegerChoices):
