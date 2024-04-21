@@ -18,7 +18,8 @@ from a_collections.utils import (artist_search,
                                  release_search, 
                                  milliseconds_to_minutes_seconds, 
                                  release_group_search, 
-                                 get_release_group_info
+                                 get_release_group_info,
+                                 format_date,
                                  )
 from a_collections.models import Artist, Release, Cover_Art, Record_Label, Collection, Track, Release_Group
 from a_collections.forms import ReleaseCreateForm, ReleaseEditForm, ArtistCreateForm, ArtistEditForm
@@ -607,13 +608,14 @@ def add_artist_view(request):
             data = release_group_info
             #TODO: juiste info invullen uit release_group_info
             # dus niet via d efront end maar vanuit een aparte call!!
+
             release_group = Release_Group.objects.create(
                 musicbrainz_id = release_group_id,
                 # musicbrainz_type_id= data.get('type-id'),
                 musicbrainz_primrary_type_id = data.get("primary-type-id"),
                 name = release_group_title,
                 artist = artist,
-                first_release_date = data.get('first-release-date'),
+                first_release_date = format_date(data.get('first-release-date')),
                 primrary_type = data.get('primary-type'),
                 secondary_types = data.get("secondary-types", []),
                 secondary_type_ids = data.get('secondary-type-ids'),
@@ -957,87 +959,147 @@ def recognize_song(request):
 
 """
 def artist_albums(request):
-    # Make a request to the MusicBrainz API to get information about the artist
-    print(f"request.method {request.method}")
+    offset = 0
+    limit = 100  # You can adjust this value based on your needs
 
     if request.method == 'POST':
-        # artist_name = request.GET.get('artist')
-        # album_name = request.GET.get('album')
-
-        # print(f"artist: {artist_name} ")
-        # print(f"album: {album_name} ")
-
         artist_name = request.POST.get('artist')
-        print(f"artist: {artist_name}")
-
+        print(f"artist that we are looking for: {artist_name}")
+        
         artist = Artist.objects.filter(name__icontains=artist_name).first()
-        response = requests.get(f'https://musicbrainz.org/ws/2/artist/{artist.musicbrainz_id}?inc=release-groups&fmt=json')
-        # response = requests.get(f'https://musicbrainz.org/ws/2/artist/{artist.musicbrainz_id}')
-        print(f"data: {response}")
-        if response.status_code == 200:
-            data = response.json()
-            print(f"data: {data}")
 
-            # Print artist information
-            print("Artist Name:", data.get("name"))
-            print("Begin Area:", data.get("begin-area", {}).get("name"))
-            print("Country:", data.get("country"))
-            print("Life Span:", data.get("life-span"))
-            print()
+        if artist:
+            # Make a request to the MusicBrainz API to get information about the artist
+            # response = requests.get(f'https://musicbrainz.org/ws/2/artist/{artist.musicbrainz_id}?inc=release-groups&fmt=json')
+            response = requests.get(f'https://musicbrainz.org/ws/2/artist/{artist.musicbrainz_id}?inc=release-groups&fmt=json&limit={limit}&offset={offset}')
+            # response = requests.get(f'https://musicbrainz.org/ws/2/release?artist={artist.musicbrainz_id}&fmt=json&inc=release-groups&limit=100&offset=300')
+            print(f"offset = {offset} and limit = {limit}")
+            print("###############")
+            print("###############")
 
-            # Print Wikipedia link if available
-            artist_wikipedia(data.get("name"))
+            # response = requests.get(f'https://musicbrainz.org/ws/2/artist/{artist.musicbrainz_id}')
+            print(f"data: {response}")
+            if response.status_code == 200:
+                data = response.json()
+                print(f"data: {data}")
 
-            # Print tags if available
-            print(f"musicbrainz id: {data.get("id")}")
-            artist_tags(data.get("id"))
+                # Print artist information
+                print("Artist Name:", data.get("name"))
+                try:
+                    print("Begin Area:", data.get("begin-area", {}).get("name"))
+                except:
+                    print("Begin Area:", data.get("begin-area"))
+                print("Country:", data.get("country"))
+                print("Life Span:", data.get("life-span"))
+                print()
 
-            # ORIGINAL CODE:
-            artist_name = data['name']
-            albums = []
-            # Extract relevant information about the artist's albums
-            for release_group in data['release-groups']:
-                if release_group['primary-type'] == 'Album':  # Filter only albums
-                    album = {
-                        'year_released': release_group.get('first-release-date', '').split('-')[0],
-                        'name': release_group['title'],
-                        'musicbrainz_id': release_group['id'],
-                        'release_id' : release_group['id'],
-                        'primary_type' : release_group['primary-type'],
-                        'secondary_types' : release_group.get('secondary-types', []),
-                        'secondary_type_ids' : release_group.get('secondary-type-ids', []),
-                    }
-                    print(f"album: {album}")
-                    albums.append(album)
-            
-            # print(albums)
-            # Pass artist name and albums to the template
-            context = {
-                'artist_name': artist_name,
-                'albums': albums
-            }
-            return render(request, 'a_collections/artist_overview.html', context)
+                # Print Wikipedia link if available
+                artist_wikipedia(data.get("name"))
+
+                # Print tags if available
+                print(f"musicbrainz id: {data.get("id")}")
+                artist_tags(data.get("id"))
+
+                # ORIGINAL CODE:
+                artist_name = data['name']
+                albums = []
+                # Extract relevant information about the artist's albums
+                idx = 1
+                for release_group in data['release-groups']:
+                    if release_group['primary-type']:  # Filter only albums
+                        album = {
+                            'year_released': release_group.get('first-release-date', '').split('-')[0],
+                            'name': release_group['title'],
+                            'musicbrainz_id': release_group['id'],
+                            'release_id' : release_group['id'],
+                            'primary_type' : release_group['primary-type'],
+                            'secondary_types' : release_group.get('secondary-types', []),
+                            'secondary_type_ids' : release_group.get('secondary-type-ids', []),
+                        }
+                        print(f"{idx} | album: {album}")
+                        idx +=1
+                        albums.append(album)
+                
+                # print(albums)
+                # Pass artist name and albums to the template
+                
+                # Sort albums in a way they can be used in teh template
+                album_list = []
+                single_list = []
+                ep_list = []
+
+                for album in albums:
+                    # print(f"album {album} | {album['primary_type']} | {album.get('primary_type')}")
+                    if album['primary_type'] == 'Album':
+                        album_list.append(album)
+                        # print(f"album in here: {album}")
+                    elif album['primary_type'] == 'Single' :
+                        single_list.append(album)
+                        print(f" single: {album}")
+                    elif album['primary_type'] == 'Ep' :
+                        print(f" ep: {album}")
+                        ep_list.append(album)
+
+                context = {
+                    'artist_name': artist_name,
+                    'albums': albums,
+                    'album_list' : album_list,
+                    'single_list' : single_list,
+                    'ep_list' :  ep_list,
+                }
+
+                return render(request, 'a_collections/artist_overview.html', context)
+            else:
+                # Handle error response from the API
+                print("message: Failed to fetch artist information")
+                messages.success(request, f'Failed to fetch artist information for {artist_name}')  
+
         else:
-            # Handle error response from the API
-            print("message: Failed to fetch artist information")
-
+                print("message: no artist found with this name in the database")
+                messages.success(request, f'No artist withthe name {artist_name} found in the database')  
     return render(request, "a_collections/artist_overview.html")
 
 
 def artist_wikipedia(artist_name):
-    url = f"https://en.wikipedia.org/w/api.php?action=query&format=json&prop=info&inprop=url&titles={artist_name}"
+    # als er een ' in de artist name zit, deze omzetten naar een %27
+    if "'" in artist_name:
+        # Vervang het enkele citaat-teken door "%27"
+        new_artist_name = artist_name.replace("'", "%27")
+        print(f"New artist name: {artist_name}")
+    else:
+        new_artist_name = artist_name
 
+    # url = f"https://nl.wikipedia.org/w/api.php?action=query&format=json&prop=info&inprop=url&titles={artist_name}&exintro=1"
+    # url = f"https://en.wikipedia.org/w/api.php?action=opensearch&search={artist_name}&limit=1&format=json"
+    url = f"https://en.wikipedia.org/w/api.php?action=query&titles={artist_name}&prop=extracts&format=json&exintro=1"
     response = requests.get(url)
     data = response.json()
+    print(f"wikipedia response: {response}")
+    print(f"wikipedia data: {data}")
 
     # Extract Wikipedia URL
     pages = data.get("query", {}).get("pages", {})
+    print(f"wikipedia pages: {pages}")
+
     if pages:
         page_id = list(pages.keys())[0]
         wikipedia_url = pages[page_id].get("fullurl", "")
         print("Wikipedia URL:", wikipedia_url)
+
+        # Haal de pagina-ID op van de artiest
+        page_ids = data['query']['pages'].keys()
+        print(f"page_ids: {page_ids}")
+        page_id = next(iter(page_ids))
+        print(f"page_id: {page_id}")
+
+        if page_id != '-1':
+            # Haal de eerste paragraaf op uit de extracten als beschikbaar, anders leeg laten
+            first_paragraph = data['query']['pages'][page_id].get('extract', '')
+            print(f"Wikipedia first paragraph: {first_paragraph}")
     else:
         print("Wikipedia URL not found.")
+    return wikipedia_url
+
 
 def artist_tags(artist_id):
     url = f"https://musicbrainz.org/ws/2/artist/{artist_id}/tags?fmt=json"

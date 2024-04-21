@@ -95,3 +95,30 @@ def milliseconds_to_minutes_seconds(milliseconds):
     # duration_milliseconds = 185693
     # duration_formatted = milliseconds_to_minutes_seconds(duration_milliseconds)
     # print(duration_formatted)  # Output: 3:05
+
+
+import re
+
+"""
+Function to check if a date (e.g. release group first release date) has the correct format (YYYY-MM-DD)
+If it is just a year turn it into the correct format
+
+Input: date (either YYYY-MM-DD or YYYY)
+Output: correctly formatted date -> YYYY-MM-DD
+"""
+def format_date(input_date):
+    # Regular expression to match YYYY-MM-DD format
+    yyyy_mm_dd_pattern = re.compile(r'^\d{4}-\d{2}-\d{2}$')
+
+    # Regular expression to match YYYY format
+    yyyy_pattern = re.compile(r'^\d{4}$')
+
+    if yyyy_mm_dd_pattern.match(input_date):
+        # Input date is already in YYYY-MM-DD format
+        return input_date
+    elif yyyy_pattern.match(input_date):
+        # Input date is in YYYY format
+        return f"{input_date}-01-01"
+    else:
+        # Invalid format, return None or handle accordingly
+        return "1900-01-01"

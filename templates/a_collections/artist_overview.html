@@ -3,14 +3,11 @@
 {% block content %}
 
 <div class="card !p-8">
-    <h1>Search Album</h1>
+    <h1>Artist Discography</h1>
     <form method="post" action="{% url 'artist_albums' %}">
         {% csrf_token %}
         <label for="artist_name">Artist Name:</label>
         <input type="text" name="artist" id="artist_name">
-        <br>
-        <label for="album_name">Album Name:</label>
-        <input type="text" name="album" id="album_name">
         <br>
         <br>
         <button type="submit">Search</button>
@@ -21,7 +18,7 @@
 <div id="results-container" class="card !p-8">
     {% comment %} {% include 'a_collections/partials/musicbrainz_results_table.html' %} {% endcomment %}
     <h1>{{ artist_name }}</h1>
-    <h2>Albums</h2>
+    {% comment %} <h2>Albums</h2>
     <ul>
         {% for album in albums %}
             <li>
@@ -29,9 +26,72 @@
                 {{album.primary_type}} |{{album.secondary_types}} 
             </li>
         {% endfor %}
-    </ul>
+    </ul> {% endcomment %}
 
-  </div>
+    <h2>Album</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Year Released</th>
+                <th>Name</th>
+                <th>MusicBrainz ID</th>
+                <th>Secondary Types</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for album in album_list %}
+                <tr>
+                    <td>{{ album.year_released }}</td>
+                    <td>{{ album.name }}</td>
+                    <td>{{ album.musicbrainz_id }}</td>
+                    <td>{{ album.secondary_types|join:", " }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
+    <h2>Singles</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Year Released</th>
+                <th>Name</th>
+                <th>MusicBrainz ID</th>
+                <th>Secondary Types</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for album in single_list %}
+                <tr>
+                    <td>{{ album.year_released }}</td>
+                    <td>{{ album.name }}</td>
+                    <td>{{ album.musicbrainz_id }}</td>
+                    <td>{{ album.secondary_types|join:", " }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>EPs</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Year Released</th>
+                <th>Name</th>
+                <th>MusicBrainz ID</th>
+                <th>Secondary Types</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for album in ep_list %}
+                <tr>
+                    <td>{{ album.year_released }}</td>
+                    <td>{{ album.name }}</td>
+                    <td>{{ album.musicbrainz_id }}</td>
+                    <td>{{ album.secondary_types|join:", " }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
 {% endblock content %}
