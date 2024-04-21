@@ -7,7 +7,7 @@ from django.conf import settings
 
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.management.base import BaseCommand
-from a_collections.models import Artist, Record_Label, Release, Track, Cover_Art, Collection, Tag
+from a_collections.models import Artist, Record_Label, Release, Track, Cover_Art, Collection, Tag, Release_Group
 from django.db.models.fields.files import ImageFieldFile
 
 
@@ -23,6 +23,7 @@ class Command(BaseCommand):
             # 'record_labels': self.serialize_model(Record_Label.objects.all()),
             'artists': [self.serialize_model(Artist)],
             'record_labels': [self.serialize_model(Record_Label)],
+            'release_groups': [self.serialize_model(Release_Group)],
             'releases': [self.serialize_model(Release)],
             'tracks': [self.serialize_model(Track)],
             'cover_art': [self.serialize_model(Cover_Art)],

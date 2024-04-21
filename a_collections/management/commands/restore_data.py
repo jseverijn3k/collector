@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
 
-from a_collections.models import Artist, Record_Label, Release, Track, Cover_Art, Collection, Tag
+from a_collections.models import Artist, Record_Label, Release, Track, Cover_Art, Collection, Tag, Release_Group
 
 
 class Command(BaseCommand):
@@ -25,6 +25,7 @@ class Command(BaseCommand):
         model_mapping = {
             'artists': Artist,
             'record_labels': Record_Label,
+            'release_groups': Release_Group,
             'releases': Release,
             'tracks': Track,
             'cover_art': Cover_Art,
@@ -71,6 +72,17 @@ class Command(BaseCommand):
                                 print(f"release is: {release} | type is: {type(release)}")
                                 obj['release'] = release
                             
+                            elif model_name == 'release_groups':
+                                print("######RELEASE GROUPS##########")
+
+                                artist_str_id = obj['artist']
+                                artist_id = uuid.UUID(artist_str_id)
+
+                                artist = Artist.objects.get(id=artist_id)
+                                print(f"artist is: {artist} type: {type(artist)}")
+                                # Assign the Artist object to the artist field
+                                obj['artist'] = artist
+
                             elif model_name == 'releases':
                                 print("######RELEASES##########")
                                 record_lab_id = obj['record_label']
@@ -82,14 +94,24 @@ class Command(BaseCommand):
                                 # Assign the Record_Label object to the record_label field
                                 obj['record_label'] = record_label
 
-                                artist_str_id = obj['artist']
-                                artist_id = uuid.UUID(artist_str_id)
+                                release_group_str_id = obj['release_group']
+                                release_group_id = uuid.UUID(release_group_str_id)
 
-                                artist = Artist.objects.get(id=artist_id)
-                                print(f"artist is: {artist} type: {type(artist)}")
-                                # Assign the Artist object to the artist field
-                                obj['artist'] = artist
+                                release_group = Release_Group.objects.get(id=release_group_id)
+                                print(f"Release_group is: {release_group} type: {type(release_group)}")
+                                # Assign the Release_Group object to the release_group field
+                                obj['release_group'] = release_group
                                 
+
+                                # artist_str_id = obj['artist']
+                                # artist_id = uuid.UUID(artist_str_id)
+
+                                # artist = Artist.objects.get(id=artist_id)
+                                # print(f"artist is: {artist} type: {type(artist)}")
+                                # # Assign the Artist object to the artist field
+                                # obj['artist'] = artist
+
+
                             # Check if the object already exists in the database
                             if not model_class.objects.filter(id=obj['id']).exists():
                                 print(f"Creating object for model {model_name}: {obj}")
