@@ -30,7 +30,33 @@
     <label for="album_name">Album Name:</label>
     <input type="text" name="album" id="album_name" placeholder="Search by album name">
     <br>
+    <label for="barcode">Barcode:</label>
+    <input type="text" name="barcode" id="barcode" placeholder="Search by barcode">
+
     <br>
+    <br>
+
+    <!-- Add checkboxes for format -->
+    <label>
+      <input type="checkbox" name="format" value="CD"> CD
+    </label>
+    <label>
+        <input type="checkbox" name="format" value="vinyl"> Vinyl
+    </label>
+    <label>
+        <input type="checkbox" name="format" value="cassette"> Cassette
+    </label>
+    <label>
+      <input type="checkbox" name="format" value="md"> Minidisc
+    </label>
+    <label>
+      <input type="checkbox" name="format" value="sacd"> SACD
+    </label>
+    <label>
+        <input type="checkbox" name="format" value="digital_media"> Digital Media
+    </label>
+    <br><br>
+    
     <button type="submit" hx-post="{% url 'collection-list' %}" hx-vals="#search-form input" hx-trigger="click" data-action="search">Search</button>
     <button type="submit" hx-post="{% url 'collection-list' %}" name="reset" value="true" hx-trigger="click">Reset</button>
 

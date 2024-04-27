@@ -21,15 +21,31 @@ def artist_search(artist):
     # "offset", not shown here) and specifies the number of results to
     # return.
 
-def release_search(artist, album):
-    print(f"artist: {artist} | album: {album}")
-    result = mbz.search_releases(artist=artist, release=album, limit=10)
+def release_search(artist, album, format):
+    print(f"artist: {artist} | album: {album} | format: {format}")
+    if format:
+        result = mbz.search_releases(artist=artist, format=format, release=album, limit=10)
+    else:
+        result = mbz.search_releases(artist=artist, release=album, limit=10)
     # On success, result is a dictionary with a single key:
     # "release-list", which is a list of dictionaries.
     # print(result)
     return result
 
 
+def release_barcode_search(barcode):
+    if barcode:
+        result  = mbz.search_releases(barcode=barcode)
+
+    # Process the result
+    if "release-list" in result:
+        releases = result["release-list"]
+        for release in releases:
+            print(f"Release: {release['title']}, ID: {release['id']}")
+    else:
+        print("No releases found for the given barcode.")
+
+    return result
 
 """ 
 Function to find all release groups that matcht teh criteria

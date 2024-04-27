@@ -18,6 +18,7 @@ from a_collections.utils import (artist_search,
                                  release_search, 
                                  milliseconds_to_minutes_seconds, 
                                  release_group_search, 
+                                 release_barcode_search,
                                  get_release_group_info,
                                  format_date,
                                  get_artists_from_hitdossier_online,
@@ -314,21 +315,34 @@ def search_artist(request):
 def search_release(request):
     results = []
     result_list = []
+    
+    # format='Cassette'
 
     if request.method == 'GET' or request.method == 'POST':
-        artist_name = request.GET.get('artist')
-        album_name = request.GET.get('album')
+        # artist_name = request.GET.get('artist')
+        # album_name = request.GET.get('album')
+        # format = request.GET.get('format')
 
-        print(f"artist: {artist_name} ")
-        print(f"album: {album_name} ")
+        # print(f"artist: {artist_name} ")
+        # print(f"album: {album_name} ")
+        # print(f"requested format: {format}")
 
         artist_name = request.POST.get('artist')
         album_name = request.POST.get('album')
+        format = request.POST.get('format')
+        barcode = request.POST.get('barcode')
 
         print(f"artist: {artist_name} ")
         print(f"album: {album_name} ")
+        print(f"barcode: {barcode} ")
+        print(f"requested format: {format}")
 
-        results = release_search(artist_name, album_name)
+        if barcode:
+            print(f"We zoeken nu obv barcode")
+            results = release_barcode_search(barcode=barcode)
+        else:
+            print(f"We zoeken nu obv artist and album")
+            results = release_search(artist_name, album_name, format=format)
 
         # TODO release group uit release halen en opslaan
         # release_group_results = release_group_search(artist_name, album_name)

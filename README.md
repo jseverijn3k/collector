@@ -48,7 +48,8 @@ The backup folder should be created with:
   * also add them to the backup and restore routine
 * speed up the search when you search for a release -> now waiting for the cover art takes to long
 * when there are a lot of releases more should be shown -> pagination?
-
+~~* add spinner to add release button to show that the api request is still ongoing~~
+* add format (https://musicbrainz.org/doc/Release/Format) to search query --> PARTLY working... when I use vinyl I also get CDs if there are less than 10 (which is the limit) results 
 * make a "want to buy list" -> based on the artist release groups you don't own yet (not releases)
   * export this as a text file so you can take it as a shopping list with you
   * also add this to the backup and restore routine
@@ -72,7 +73,7 @@ The backup folder should be created with:
 
 ## BUGS
 
-* when adding Billy Joel - Greatest Hits Volume I and II -> only the tracks of the first disc are added
+* When adding Billy Joel - Greatest Hits Volume I and II -> only the tracks of the first disc are added
 
 ## Decisions
 
