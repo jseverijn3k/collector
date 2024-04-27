@@ -32,7 +32,7 @@ The backup folder should be created with:
   * also add them to the backup and restore routine
   * should we have a standard artist list that is being downloaded?
     * -> now only an overview of an artist in the database can be shown??
-    * -> so something like a standard database setup... If so, should we make a standard 'stocklist' or something?? -> MVP-2 is a BS4 scraper to scrape <https://www.hitdossier-online.nl>
+    * -> so something like a standard database setup... If so, should we make a standard 'stocklist' or something?? x-> MVP-2 is a BS4 scraper to scrape <https://www.hitdossier-online.nl>
       * create a function to:
         * read the stock list
         * query musicbrainz for artist mb_id
@@ -69,6 +69,10 @@ The backup folder should be created with:
 
 * create a barcode scanner -> to search on barcode
 * create a shazam function -> to search on music played
+
+## BUGS
+
+* when adding Billy Joel - Greatest Hits Volume I and II -> only the tracks of the first disc are added
 
 ## Decisions
 

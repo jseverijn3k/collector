@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+    {% comment %} <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet"> {% endcomment %}
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
@@ -60,6 +61,32 @@
         .button:active, button:active, [type='submit']:active, [type='button']:active {
             transform: scale(0.95);
         }
+
+        .button img.htmx-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: inline-block; /* Ensures the spinner appears inline with the button text */
+        }
+
+        .spinner-container {
+            position: relative; /* Ensure relative positioning for absolute positioning of spinner */
+        }
+        
+        .spinner-container button {
+            position: relative; /* Ensure relative positioning for absolute positioning of spinner */
+            padding-right: 30px; /* Add padding to the right to accommodate the spinner */
+        }
+    
+        .spinner {
+            position: absolute; /* Position the spinner absolutely within its container */
+            top: 50%; /* Vertically center the spinner */
+            right: 5px; /* Adjust this value as needed to position the spinner */
+            transform: translateY(-50%); /* Center the spinner vertically */
+            color: white; /* Set the color of the spinner */
+        }
+
         .secondaryAction {
             background-color: white;
             color: rgba(0, 0, 0, 0.6);
@@ -240,6 +267,10 @@
         #profile article p {
             @apply truncate leading-normal;
         }
+
+        /* CSS voor de spinner */
+        
+
     </style>
 </head>
 <body class="bg-gray-100">

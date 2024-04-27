@@ -1129,3 +1129,5 @@ def hitdossier_create(request):
             artists = get_artists_from_hitdossier_online(url)
             return render(request, 'a_collections/hitdossier_create.html', {'artists': artists})
     return render(request, 'a_collections/hitdossier_create.html')
+
+

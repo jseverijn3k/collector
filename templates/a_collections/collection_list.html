@@ -5,32 +5,23 @@
 <div class="card !p-8">
   <div class="flex justify-between items-center">
     <h1 class="text-left">Collection of {{ request.user }}</h1>
-     {% comment %} <a href="#" hx-get="{% url 'collection-list' %}" hx-target="#results-container" hx-swap="innerHTML"> {% endcomment %}
       
-      <button type="button" hx-trigger="click" hx-get="{% url 'collection-list' %}?data-template=a_collections/partials/results_table.html" hx-target="#results-container" hx-swap="innerHTML">
-        List View
-      </button>
+    <button type="button" hx-trigger="click" hx-get="{% url 'collection-list' %}?data-template=a_collections/partials/results_table.html" hx-target="#results-container" hx-swap="innerHTML">
+      List View
+    </button>
       
-      <button type="button" hx-trigger="click" hx-get="{% url 'collection-list' %}?data-template=a_collections/partials/results_cover.html" hx-target="#results-container" hx-swap="innerHTML">
-        Cover View
-      </button>
-            
-  </div>
-  
-  <!-- Search form -->
-  {% comment %} <form id="search-form" hx-post="{% url 'collection-list' %}" hx-target="#results-container" hx-swap="innerHTML" hx-boost="true">
-    {% csrf_token %}
-    <label for="artist_name">Artist Name:</label>
-    <input type="text" name="artist" id="artist_name" placeholder="Search by artist">
-    <br>
-    <label for="album_name">Album Name:</label>
-    <input type="text" name="album" id="album_name" placeholder="Search by album name">
-    <br>
-    <br>
-    <button type="submit" hx-vals="#search-form input" hx-trigger="click">Search</button>
-    <button type="submit" name="reset" value="true" hx-trigger="click">Reset</button>
-  </form> {% endcomment %}
+    <button type="button" hx-trigger="click" hx-get="{% url 'collection-list' %}?data-template=a_collections/partials/results_cover.html" hx-target="#results-container" hx-swap="innerHTML">
+      Cover View
+    </button>
 
+  </div>
+
+  <!-- Spinner element -->
+  <div id="spinner" class="hidden">
+    <i class="fas fa-spinner fa-spin"></i> Loading...
+  </div>
+
+  <!-- search form -->
   <form id="search-form" hx-target="#results-container" hx-swap="innerHTML" hx-boost="true">
     {% csrf_token %}
     <label for="artist_name">Artist Name:</label>
@@ -42,8 +33,13 @@
     <br>
     <button type="submit" hx-post="{% url 'collection-list' %}" hx-vals="#search-form input" hx-trigger="click" data-action="search">Search</button>
     <button type="submit" hx-post="{% url 'collection-list' %}" name="reset" value="true" hx-trigger="click">Reset</button>
-    <button type="submit" hx-post="{% url 'search_release' %}" hx-target="#results-container" hx-swap="innerHTML">Add</button>
-    {% comment %} <button type="submit" hx-post="{% url 'search_release_group' %}" hx-target="#results-container" hx-swap="innerHTML">Add VIA GROUP</button> {% endcomment %}
+
+    <!-- Add hx-indicator attribute to the Add button to indicate loading -->
+    <button type="submit" hx-post="{% url 'search_release' %}" hx-target="#results-container" hx-indicator="#spinner" hx-swap="innerHTML">Add release  
+      <img  id="spinner" class="htmx-indicator" src="{% static 'images/spinner200.svg' %}"/>
+    </button>
+    
+    
   </form>
 
   <div id="results-container" class="card !p-8">
@@ -52,4 +48,11 @@
   </div>
 
 </div> 
+
+<script>
+  // Remove the 'hidden' class from the spinner when the Add release button is clicked
+  document.getElementById('search-form').addEventListener('submit', function(event) {
+    document.getElementById('spinner').classList.remove('hidden');
+  });
+</script>
 {% endblock %}
