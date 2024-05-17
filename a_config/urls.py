@@ -63,7 +63,7 @@ urlpatterns = [
 
 
     #TODO: artist overview
-    path('artist_album/', artist_albums, name='artist_albums'),
+    path('artist_album/', artist_discography, name='artist_albums'),
 
     #TODO: shazam
     path('shazam/', recognize_song, name='shazam'),

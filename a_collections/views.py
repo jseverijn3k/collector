@@ -973,9 +973,9 @@ def recognize_song(request):
     output: list of albums from the artis
 
 """
-def artist_albums(request):
+def artist_discography(request):
     offset = 0
-    limit = 100  # You can adjust this value based on your needs
+    limit = 10  # You can adjust this value based on your needs
 
     if request.method == 'POST':
         artist_name = request.POST.get('artist')
@@ -986,7 +986,15 @@ def artist_albums(request):
         if artist:
             # Make a request to the MusicBrainz API to get information about the artist
             # response = requests.get(f'https://musicbrainz.org/ws/2/artist/{artist.musicbrainz_id}?inc=release-groups&fmt=json')
-            response = requests.get(f'https://musicbrainz.org/ws/2/artist/{artist.musicbrainz_id}?inc=release-groups&fmt=json&limit={limit}&offset={offset}')
+            # TODO: limit and offset dont work
+            # response = requests.get(f'https://musicbrainz.org/ws/2/artist/{artist.musicbrainz_id}?inc=release-groups&type=album|single&fmt=json&limit={limit}&offset={offset}')
+            response = requests.get(f'https://musicbrainz.org/ws/2/artist/{artist.musicbrainz_id}?inc=release-groups&type=album|single&fmt=json&limit=100')
+            # response = requests.get(f'https://musicbrainz.org/ws/2/artist/{artist.musicbrainz_id}?inc=release-groups&type=album|single&fmt=json')
+
+            # response = requests.get(f'http://musicbrainz.org/ws/2/release-group/?query=artist:"{artist_name}"&fmt=json&limit={limit}&offset={offset}')
+
+            # response = requests.get(f'https://musicbrainz.org/ws/2/artist/{artist.musicbrainz_id}?inc=release-groups&type=album|single&fmt=json')
+
             # response = requests.get(f'https://musicbrainz.org/ws/2/release?artist={artist.musicbrainz_id}&fmt=json&inc=release-groups&limit=100&offset=300')
             print(f"offset = {offset} and limit = {limit}")
             print("###############")
@@ -996,8 +1004,10 @@ def artist_albums(request):
             print(f"data: {response}")
             if response.status_code == 200:
                 data = response.json()
-                print(f"data: {data}")
-
+                print("###### DATA ###########")
+                print(f"{data}")
+                print("#######################")
+                
                 # Print artist information
                 print("Artist Name:", data.get("name"))
                 try:
@@ -1009,29 +1019,34 @@ def artist_albums(request):
                 print()
 
                 # Print Wikipedia link if available
-                artist_wikipedia(data.get("name"))
+                artist_wikipedia(artist_name)
+                # artist_wikipedia(data.get("name"))
 
                 # Print tags if available
                 print(f"musicbrainz id: {data.get("id")}")
                 artist_tags(data.get("id"))
 
                 # ORIGINAL CODE:
-                artist_name = data['name']
+                # artist_name = data['name']
+                artist_name = artist_name
                 albums = []
                 # Extract relevant information about the artist's albums
                 idx = 1
                 for release_group in data['release-groups']:
-                    if release_group['primary-type']:  # Filter only albums
+                    primary_type = release_group.get('primary-type')
+                    if primary_type:
+                    # if release_group['primary-type']:  # Filter only albums
                         album = {
                             'year_released': release_group.get('first-release-date', '').split('-')[0],
                             'name': release_group['title'],
                             'musicbrainz_id': release_group['id'],
                             'release_id' : release_group['id'],
                             'primary_type' : release_group['primary-type'],
+                            # 'primary_type' : release_group.get('primary-type'),  # Get the primary-type or None if not found
                             'secondary_types' : release_group.get('secondary-types', []),
                             'secondary_type_ids' : release_group.get('secondary-type-ids', []),
                         }
-                        print(f"{idx} | album: {album}")
+                        print(f"{idx} | item : {album}")
                         idx +=1
                         albums.append(album)
                 
@@ -1088,12 +1103,12 @@ def artist_wikipedia(artist_name):
 
     response = requests.get(url)
     data = response.json()
-    print(f"wikipedia response: {response}")
-    print(f"wikipedia data: {data}")
+    # print(f"wikipedia response: {response}")
+    # print(f"wikipedia data: {data}")
 
     # Extract Wikipedia URL
     pages = data.get("query", {}).get("pages", {})
-    print(f"wikipedia pages: {pages}")
+    # print(f"wikipedia pages: {pages}")
 
     if pages:
         page_id = list(pages.keys())[0]
@@ -1109,10 +1124,10 @@ def artist_wikipedia(artist_name):
         if page_id != '-1':
             # Haal de eerste paragraaf op uit de extracten als beschikbaar, anders leeg laten
             first_paragraph = data['query']['pages'][page_id].get('extract', '')
-            print(f"Wikipedia first paragraph: {first_paragraph}")
+            # print(f"Wikipedia first paragraph: {first_paragraph}")
     else:
         print("Wikipedia URL not found.")
-    return wikipedia_url
+    return first_paragraph
 
 
 def artist_tags(artist_id):

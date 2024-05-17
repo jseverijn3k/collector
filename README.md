@@ -48,6 +48,7 @@ The backup folder should be created with:
   * also add them to the backup and restore routine
 * speed up the search when you search for a release -> now waiting for the cover art takes to long
 * when there are a lot of releases more should be shown -> pagination?
+~~* add barcode release search -> useful whene there are a lot of different release groups...~~
 ~~* add spinner to add release button to show that the api request is still ongoing~~
 * add format (https://musicbrainz.org/doc/Release/Format) to search query --> PARTLY working... when I use vinyl I also get CDs if there are less than 10 (which is the limit) results 
 * make a "want to buy list" -> based on the artist release groups you don't own yet (not releases)
